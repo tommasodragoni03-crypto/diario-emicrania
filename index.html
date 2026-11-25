@@ -1,0 +1,3988 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Migraine Calendar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* Lexicon Shoulder & Plate — Archival Paper (Light Mode) */
+      --bg-ground: #EAE4D7;
+      --bg-plate: #F4F0E7;
+      --bg-plate-alt: #EFEAE0;
+      --bg-shoulder: #DFD8C8;
+      --bg-recap: #F4F0E7;
+      --bg-recap-inner: #EFEAE0;
+      --ink-recap: #191815;
+      --ink-recap-muted: #545047;
+      --rule-recap: #C7BFAE;
+
+      --ink-primary: #191815;
+      --ink-secondary: #545047;
+      --ink-muted: #5E584D;
+      --rule-hairline: #C7BFAE;
+      --rule-strong: #191815;
+
+      /* Mineral Ink State Scale (Intensity 1-5 & Clinical Markers) */
+      --sev-1: #2D5E4C;
+      --sev-1-bg: rgba(45, 94, 76, 0.13);
+      --sev-2: #725D1F;
+      --sev-2-bg: rgba(114, 93, 31, 0.14);
+      --sev-3: #9B5614;
+      --sev-3-bg: rgba(155, 86, 20, 0.15);
+      --sev-4: #A1321F;
+      --sev-4-bg: rgba(161, 50, 31, 0.15);
+      --sev-5: #831D18;
+      --sev-5-bg: rgba(131, 29, 24, 0.18);
+
+      --accent-primary: #9E3826;
+      --accent-primary-hover: #832C1D;
+      --accent-clinical: #274A78;
+      --accent-clinical-fill: #274A78;
+      --accent-clinical-bg: rgba(39, 74, 120, 0.12);
+      --accent-ok: #2D5E4C;
+      --accent-ok-bg: rgba(45, 94, 76, 0.14);
+      --accent-warn: #9A611C;
+      --accent-warn-bg: rgba(154, 97, 28, 0.14);
+
+      --shadow-elevated: 0 12px 32px rgba(25, 24, 21, 0.14);
+      --shadow-soft: 0 2px 8px rgba(25, 24, 21, 0.06);
+
+      --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+      --font-sans: "Atkinson Hyperlegible", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --transition-ui: 180ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    html[data-theme="dark"] {
+      /* Lexicon Shoulder & Plate — Anti-Photophobia Dusk Charcoal */
+      --bg-ground: #111214;
+      --bg-plate: #181A1D;
+      --bg-plate-alt: #1E2024;
+      --bg-shoulder: #141518;
+      --bg-recap: #202328;
+      --bg-recap-inner: #181A1E;
+      --ink-recap: #E6E0D4;
+      --ink-recap-muted: #9E978B;
+      --rule-recap: #343840;
+
+      --ink-primary: #E5DFD3;
+      --ink-secondary: #AEA79B;
+      --ink-muted: #989185;
+      --rule-hairline: #2C2F36;
+      --rule-strong: #6A655B;
+
+      --sev-1: #5CA185;
+      --sev-1-bg: rgba(92, 161, 133, 0.16);
+      --sev-2: #C2A555;
+      --sev-2-bg: rgba(194, 165, 85, 0.16);
+      --sev-3: #D48A45;
+      --sev-3-bg: rgba(212, 138, 69, 0.18);
+      --sev-4: #D46652;
+      --sev-4-bg: rgba(212, 102, 82, 0.19);
+      --sev-5: #EB6E64;
+      --sev-5-bg: rgba(235, 110, 100, 0.22);
+
+      --accent-primary: #C85E4B;
+      --accent-primary-hover: #D6715F;
+      --accent-clinical: #7BA0CC;
+      --accent-clinical-fill: #2B4E7A;
+      --accent-clinical-bg: rgba(123, 160, 204, 0.16);
+      --accent-ok: #65A88C;
+      --accent-ok-bg: rgba(101, 168, 140, 0.16);
+      --accent-warn: #CFA053;
+      --accent-warn-bg: rgba(207, 160, 83, 0.16);
+
+      --shadow-elevated: 0 14px 36px rgba(0, 0, 0, 0.55);
+      --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    ::selection {
+      background: var(--accent-primary);
+      color: #F4F0E7;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-ground);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--rule-hairline);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--ink-muted);
+    }
+
+    :root {
+      accent-color: var(--accent-primary);
+      caret-color: var(--accent-primary);
+    }
+
+    body {
+      background-color: var(--bg-ground);
+      color: var(--ink-primary);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color var(--transition-ui), color var(--transition-ui);
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent-primary);
+      outline-offset: 2px;
+    }
+
+    .tabular {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .svg-icon {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.65;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .svg-icon-sm {
+      width: 14px;
+      height: 14px;
+    }
+
+    .svg-icon-lg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* App Shell & Header */
+    .app-shell {
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid var(--rule-hairline);
+      border-right: 1px solid var(--rule-hairline);
+      background: var(--bg-ground);
+      overflow-x: hidden;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: var(--bg-plate);
+      border-bottom: 1px solid var(--rule-strong);
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-emblem {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--rule-strong);
+      background: var(--bg-plate-alt);
+      border-radius: var(--radius-sm);
+      display: grid;
+      place-items: center;
+      color: var(--accent-primary);
+    }
+
+    .brand-title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink-primary);
+    }
+
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-shoulder);
+      padding: 3px;
+      border: 1px solid var(--rule-hairline);
+      border-radius: var(--radius-md);
+    }
+
+    .nav-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--ink-secondary);
+      transition: background-color var(--transition-ui), color var(--transition-ui);
+    }
+
+    .nav-tab:hover {
+      color: var(--ink-primary);
+      background: rgba(128, 120, 105, 0.1);
+    }
+
+    .nav-tab[aria-selected="true"] {
+      background: var(--bg-plate);
+      color: var(--ink-primary);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--rule-hairline);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 700;
+      border: 1px solid var(--rule-strong);
+      background: var(--bg-plate);
+      color: var(--ink-primary);
+      transition: background-color var(--transition-ui), border-color var(--transition-ui), transform 120ms ease;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: var(--bg-shoulder);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: #F6F2EA;
+      box-shadow: inset 0 0 0 2px var(--accent-primary), inset 0 0 0 3px rgba(246, 242, 234, 0.35);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-primary-hover);
+      border-color: var(--accent-primary-hover);
+    }
+
+    .btn-subtle {
+      border-color: var(--rule-hairline);
+      background: var(--bg-plate-alt);
+      color: var(--ink-secondary);
+    }
+
+    .btn-subtle:hover:not(:disabled) {
+      color: var(--ink-primary);
+      border-color: var(--rule-strong);
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 0.8rem;
+    }
+
+    .sync-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--rule-hairline);
+      background: var(--bg-plate-alt);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--ink-secondary);
+      transition: border-color var(--transition-ui), color var(--transition-ui);
+    }
+
+    .sync-pill:hover {
+      border-color: var(--rule-strong);
+      color: var(--ink-primary);
+    }
+
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ink-muted);
+    }
+
+    .sync-pill[data-state="synced"] .sync-dot {
+      background: var(--accent-ok);
+    }
+
+    .sync-pill[data-state="syncing"] .sync-dot {
+      background: var(--accent-warn);
+      animation: pulse 1s infinite ease-in-out;
+    }
+
+    .sync-pill[data-state="error"] .sync-dot {
+      background: var(--sev-4);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    /* Main Content Container */
+    .view-panel {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+    }
+
+    .view-panel.active {
+      display: flex;
+    }
+
+    /* DOMINANT MONTHLY RECAP PLATE */
+    .recap-plate-wrap {
+      padding: 20px 28px 0 28px;
+    }
+
+    .recap-plate {
+      background: var(--bg-recap);
+      color: var(--ink-recap);
+      border: 1px solid var(--rule-strong);
+      border-radius: var(--radius-md);
+      padding: 22px 26px;
+      box-shadow: var(--shadow-elevated);
+      position: relative;
+    }
+
+    .recap-plate::after {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border: 1px solid var(--rule-recap);
+      border-radius: 3px;
+      pointer-events: none;
+    }
+
+    .recap-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--rule-recap);
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .recap-title-group {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .recap-heading {
+      font-family: var(--font-serif);
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink-recap);
+      line-height: 1.15;
+    }
+
+    .recap-range {
+      font-size: 0.875rem;
+      color: var(--ink-recap-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .recap-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .recap-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--rule-recap);
+      background: var(--bg-recap-inner);
+      color: var(--ink-recap);
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: background-color var(--transition-ui), border-color var(--transition-ui);
+    }
+
+    .recap-btn:hover {
+      border-color: var(--ink-recap-muted);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .recap-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .recap-kpi {
+      background: var(--bg-recap-inner);
+      border: 1px solid var(--rule-recap);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .recap-kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--ink-recap-muted);
+      font-weight: 700;
+    }
+
+    .recap-kpi-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .recap-kpi-value {
+      font-family: var(--font-serif);
+      font-size: 2.15rem;
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--ink-recap);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .recap-kpi-sub {
+      font-size: 0.8rem;
+      color: var(--ink-recap-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .recap-footer-bar {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--rule-recap);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sev-dist-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+      width: 100%;
+    }
+
+    .sev-dist-label {
+      font-size: 0.78rem;
+      color: var(--ink-recap-muted);
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .sev-dist-bar {
+      flex: 1;
+      height: 10px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--rule-recap);
+      display: flex;
+      overflow: hidden;
+      gap: 1px;
+    }
+
+    .sev-dist-seg {
+      height: 100%;
+      transition: width 260ms ease;
+    }
+
+    .recap-quick-counts {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 0.78rem;
+      color: var(--ink-recap-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .recap-quick-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    /* Calendar + Shoulder Grid */
+    .workspace-split {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 370px;
+      gap: 20px;
+      padding: 20px 28px 28px 28px;
+      align-items: start;
+    }
+
+    .calendar-plate,
+    .shoulder-plate,
+    .plate-card {
+      position: relative;
+      background-image:
+        linear-gradient(to right, var(--rule-strong) 8px, transparent 8px),
+        linear-gradient(to bottom, var(--rule-strong) 8px, transparent 8px),
+        linear-gradient(to left, var(--rule-strong) 8px, transparent 8px),
+        linear-gradient(to bottom, var(--rule-strong) 8px, transparent 8px),
+        linear-gradient(to right, var(--rule-strong) 8px, transparent 8px),
+        linear-gradient(to top, var(--rule-strong) 8px, transparent 8px),
+        linear-gradient(to left, var(--rule-strong) 8px, transparent 8px),
+        linear-gradient(to top, var(--rule-strong) 8px, transparent 8px);
+      background-position:
+        4px 4px, 4px 4px,
+        calc(100% - 4px) 4px, calc(100% - 4px) 4px,
+        4px calc(100% - 4px), 4px calc(100% - 4px),
+        calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) calc(100% - 4px);
+      background-size: 8px 1px, 1px 8px;
+      background-repeat: no-repeat;
+    }
+
+    .calendar-plate {
+      background-color: var(--bg-plate);
+      border: 1px solid var(--rule-strong);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--rule-hairline);
+    }
+
+    .weekday-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-secondary);
+      padding-left: 4px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    /* Multi-Layered Vector Day Cards */
+    .day-cell {
+      position: relative;
+      min-width: 0;
+      min-height: 112px;
+      background: var(--bg-plate-alt);
+      border: 1px solid var(--rule-hairline);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+      text-align: left;
+      overflow: hidden;
+      transition: border-color var(--transition-ui), background-color var(--transition-ui), transform 120ms ease, box-shadow var(--transition-ui);
+    }
+
+    .day-cell:hover {
+      border-color: var(--rule-strong);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .day-cell.outside {
+      opacity: 0.42;
+      background: transparent;
+    }
+
+    .day-cell.has-episodes {
+      background: var(--bg-plate);
+      border-color: var(--ink-muted);
+    }
+
+    .day-cell.sev-level-1 { background: linear-gradient(180deg, var(--sev-1-bg) 0%, var(--bg-plate) 58%); }
+    .day-cell.sev-level-2 { background: linear-gradient(180deg, var(--sev-2-bg) 0%, var(--bg-plate) 58%); }
+    .day-cell.sev-level-3 { background: linear-gradient(180deg, var(--sev-3-bg) 0%, var(--bg-plate) 58%); }
+    .day-cell.sev-level-4 { background: linear-gradient(180deg, var(--sev-4-bg) 0%, var(--bg-plate) 58%); }
+    .day-cell.sev-level-5 { background: linear-gradient(180deg, var(--sev-5-bg) 0%, var(--bg-plate) 58%); }
+
+    .day-cell.selected {
+      outline: 2px solid var(--accent-primary);
+      outline-offset: -2px;
+      border-color: var(--accent-primary);
+    }
+
+    /* Layer 1: Day Header */
+    .day-layer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    .day-num-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .day-num {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink-primary);
+      line-height: 1;
+    }
+
+    .today-pill {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 1px 5px;
+      border-radius: 3px;
+      border: 1px solid var(--accent-primary);
+      color: var(--accent-primary);
+      line-height: 1.2;
+    }
+
+    .attack-count-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: var(--ink-primary);
+      color: var(--bg-plate);
+    }
+
+    /* Layer 2: Intensity Meter + Laterality Vector */
+    .day-layer-mid {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 4px 5px;
+      border-radius: 3px;
+      background: rgba(128, 120, 105, 0.08);
+      border: 1px solid var(--rule-hairline);
+      min-width: 0;
+    }
+
+    .sev-meter-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .sev-badge-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: #F4F0E7;
+      line-height: 1.25;
+    }
+
+    .sev-bg-1 { background: var(--sev-1); }
+    .sev-bg-2 { background: var(--sev-2); }
+    .sev-bg-3 { background: var(--sev-3); }
+    .sev-bg-4 { background: var(--sev-4); }
+    .sev-bg-5 { background: var(--sev-5); }
+
+    .sev-pips {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .sev-pip {
+      width: 4px;
+      height: 10px;
+      border-radius: 1px;
+      background: var(--rule-hairline);
+    }
+
+    .sev-pip.filled-1 { background: var(--sev-1); }
+    .sev-pip.filled-2 { background: var(--sev-2); }
+    .sev-pip.filled-3 { background: var(--sev-3); }
+    .sev-pip.filled-4 { background: var(--sev-4); }
+    .sev-pip.filled-5 { background: var(--sev-5); }
+
+    .lat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      color: var(--ink-secondary);
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    /* Layer 3: Diurnal 5-Slot Cadence Strip */
+    .day-layer-slots {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3px;
+      align-items: center;
+    }
+
+    .slot-bar {
+      height: 5px;
+      border-radius: 2px;
+      background: var(--rule-hairline);
+      opacity: 0.45;
+    }
+
+    .slot-bar.active {
+      opacity: 1;
+      background: var(--ink-secondary);
+    }
+
+    .slot-bar.active.sev-1 { background: var(--sev-1); }
+    .slot-bar.active.sev-2 { background: var(--sev-2); }
+    .slot-bar.active.sev-3 { background: var(--sev-3); }
+    .slot-bar.active.sev-4 { background: var(--sev-4); }
+    .slot-bar.active.sev-5 { background: var(--sev-5); }
+
+    /* Layer 4: Medication + Notes Footer */
+    .day-layer-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      min-height: 18px;
+      font-size: 0.72rem;
+      color: var(--ink-secondary);
+    }
+
+    .med-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 1px 6px;
+      border-radius: 3px;
+      background: var(--accent-clinical-bg);
+      color: var(--accent-clinical);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      border: 1px solid rgba(39, 74, 120, 0.22);
+    }
+
+    .note-indicator {
+      display: inline-flex;
+      align-items: center;
+      color: var(--ink-muted);
+      margin-left: auto;
+    }
+
+    .day-empty-hint {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      font-size: 0.72rem;
+      color: var(--ink-muted);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-ui);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .day-cell:hover .day-empty-hint,
+    .day-cell:focus-visible .day-empty-hint {
+      opacity: 1;
+    }
+
+    /* Shoulder Column (Inspector + Legend) */
+    .shoulder-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .shoulder-plate {
+      background-color: var(--bg-shoulder);
+      border: 1px solid var(--rule-strong);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .shoulder-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--rule-hairline);
+    }
+
+    .shoulder-title {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--ink-primary);
+      line-height: 1.25;
+    }
+
+    .shoulder-subtitle {
+      font-size: 0.82rem;
+      color: var(--ink-secondary);
+      margin-top: 2px;
+    }
+
+    .attack-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .attack-item {
+      background: var(--bg-plate);
+      border: 1px solid var(--rule-hairline);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .attack-item-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .attack-sev-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 3px;
+      color: #F4F0E7;
+    }
+
+    .attack-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      border: 1px solid var(--rule-hairline);
+      background: var(--bg-plate-alt);
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--ink-secondary);
+    }
+
+    .meta-chip.med {
+      background: var(--accent-clinical-bg);
+      color: var(--accent-clinical);
+      border-color: rgba(39, 74, 120, 0.25);
+    }
+
+    .attack-note {
+      font-size: 0.84rem;
+      color: var(--ink-secondary);
+      line-height: 1.45;
+      padding-top: 6px;
+      border-top: 1px dashed var(--rule-hairline);
+    }
+
+    .attack-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .icon-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--rule-hairline);
+      background: var(--bg-plate-alt);
+      color: var(--ink-secondary);
+      display: inline-grid;
+      place-items: center;
+      transition: background-color var(--transition-ui), color var(--transition-ui), border-color var(--transition-ui);
+    }
+
+    .icon-btn:hover {
+      color: var(--ink-primary);
+      border-color: var(--rule-strong);
+      background: var(--bg-shoulder);
+    }
+
+    .icon-btn.danger:hover {
+      color: var(--sev-5);
+      border-color: var(--sev-5);
+    }
+
+    .empty-day-box {
+      background: var(--bg-plate);
+      border: 1px dashed var(--rule-hairline);
+      border-radius: var(--radius-sm);
+      padding: 20px 16px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink-secondary);
+      font-size: 0.88rem;
+    }
+
+    /* Legend Plate */
+    .legend-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      font-size: 0.8rem;
+      color: var(--ink-secondary);
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .legend-scale {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      border: 1px solid var(--rule-hairline);
+      background: var(--bg-plate);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    /* Stats & Widget Preview View */
+    .subview-container {
+      padding: 24px 28px 36px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .section-title-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--rule-strong);
+      padding-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .stats-layout {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .plate-card {
+      background-color: var(--bg-plate);
+      border: 1px solid var(--rule-strong);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .plate-card-title {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule-hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .bar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr) 48px;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+    }
+
+    .bar-track {
+      height: 12px;
+      background: var(--bg-shoulder);
+      border: 1px solid var(--rule-hairline);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--accent-primary);
+      transition: width 300ms ease;
+    }
+
+    .bar-fill.clinical {
+      background: var(--accent-clinical);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 9px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--rule-hairline);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .data-table th {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-secondary);
+      border-bottom-color: var(--rule-strong);
+    }
+
+    /* Native Widget Previews (2x2 & 4x2) */
+    .widget-showcase {
+      background: var(--bg-shoulder);
+      border: 1px solid var(--rule-strong);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .widgets-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .widget-frame {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .widget-caption {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--ink-secondary);
+    }
+
+    .widget-2x2 {
+      width: 196px;
+      height: 196px;
+      border-radius: 22px;
+      background: var(--bg-plate);
+      border: 1px solid var(--rule-strong);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow-elevated);
+      position: relative;
+    }
+
+    .widget-2x2::after,
+    .widget-4x2::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border: 1px solid var(--rule-hairline);
+      border-radius: 16px;
+      pointer-events: none;
+    }
+
+    .widget-4x2 {
+      width: 408px;
+      max-width: 100%;
+      min-height: 196px;
+      border-radius: 22px;
+      background: var(--bg-plate);
+      border: 1px solid var(--rule-strong);
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr);
+      gap: 16px;
+      box-shadow: var(--shadow-elevated);
+      position: relative;
+    }
+
+    .widget-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--ink-secondary);
+    }
+
+    .widget-hero-num {
+      font-family: var(--font-serif);
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--ink-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .widget-sub {
+      font-size: 0.75rem;
+      color: var(--ink-secondary);
+      line-height: 1.3;
+    }
+
+    .widget-4x2-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      border-left: 1px solid var(--rule-hairline);
+      padding-left: 16px;
+    }
+
+    .widget-mini-stat {
+      background: var(--bg-plate-alt);
+      border: 1px solid var(--rule-hairline);
+      border-radius: 6px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .widget-mini-stat small {
+      font-size: 0.68rem;
+      color: var(--ink-secondary);
+      font-weight: 700;
+    }
+
+    .widget-mini-stat strong {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Settings & Google Sheets Sync View */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--ink-secondary);
+    }
+
+    .input {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--rule-hairline);
+      background: var(--bg-plate-alt);
+      color: var(--ink-primary);
+      font-size: 0.9rem;
+      transition: border-color var(--transition-ui);
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+    }
+
+    .med-config-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--rule-hairline);
+      border-radius: var(--radius-sm);
+      background: var(--bg-plate-alt);
+    }
+
+    .inline-form-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .inline-form-row .input {
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .notice-box {
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--rule-hairline);
+      background: var(--bg-shoulder);
+      font-size: 0.84rem;
+      color: var(--ink-secondary);
+      line-height: 1.45;
+    }
+
+    .notice-box.warn {
+      background: var(--accent-warn-bg);
+      border-color: var(--accent-warn);
+      color: var(--ink-primary);
+    }
+
+    .notice-box.ok {
+      background: var(--accent-ok-bg);
+      border-color: var(--accent-ok);
+      color: var(--ink-primary);
+    }
+
+    .schema-block {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.78rem;
+      background: var(--bg-shoulder);
+      border: 1px solid var(--rule-hairline);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      overflow-x: auto;
+      white-space: nowrap;
+      color: var(--ink-primary);
+    }
+
+    /* Dialog Modal (Day Detail / Attack Editor) */
+    dialog.attack-dialog {
+      margin: auto;
+      width: min(680px, calc(100vw - 24px));
+      max-height: calc(100vh - 32px);
+      border: 1px solid var(--rule-strong);
+      border-radius: var(--radius-md);
+      background: var(--bg-plate);
+      color: var(--ink-primary);
+      box-shadow: var(--shadow-elevated);
+      padding: 0;
+      overflow: hidden;
+    }
+
+    dialog.attack-dialog::backdrop {
+      background: rgba(15, 14, 12, 0.65);
+      backdrop-filter: blur(2px);
+    }
+
+    .dialog-inner {
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 34px);
+    }
+
+    .dialog-head {
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--rule-strong);
+      background: var(--bg-shoulder);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .dialog-title {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .dialog-body {
+      padding: 20px 22px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .dialog-foot {
+      padding: 14px 22px;
+      border-top: 1px solid var(--rule-hairline);
+      background: var(--bg-plate-alt);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--rule-hairline);
+      border-radius: var(--radius-sm);
+      background: var(--bg-plate-alt);
+    }
+
+    .switch-btn {
+      width: 46px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid var(--rule-strong);
+      background: var(--bg-shoulder);
+      position: relative;
+      transition: background-color var(--transition-ui);
+      flex-shrink: 0;
+    }
+
+    .switch-btn[aria-checked="true"] {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+    }
+
+    .switch-thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--ink-primary);
+      transition: transform var(--transition-ui), background-color var(--transition-ui);
+    }
+
+    .switch-btn[aria-checked="true"] .switch-thumb {
+      transform: translateX(20px);
+      background: #F4F0E7;
+    }
+
+    .day-attack-tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .attack-tab-pill {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--rule-hairline);
+      background: var(--bg-plate-alt);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--ink-secondary);
+    }
+
+    .attack-tab-pill.active {
+      border-color: var(--accent-primary);
+      background: var(--accent-primary);
+      color: #F4F0E7;
+    }
+
+    .sev-selector {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .sev-option {
+      padding: 10px 6px;
+      border: 1px solid var(--rule-hairline);
+      border-radius: var(--radius-sm);
+      background: var(--bg-plate-alt);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--ink-secondary);
+      transition: border-color var(--transition-ui), background-color var(--transition-ui), color var(--transition-ui);
+    }
+
+    .sev-option strong {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      color: var(--ink-primary);
+    }
+
+    .sev-option[aria-pressed="true"] {
+      color: #F4F0E7;
+      border-color: transparent;
+    }
+
+    .sev-option[aria-pressed="true"] strong {
+      color: #F4F0E7;
+    }
+
+    .sev-option[data-sev="1"][aria-pressed="true"] { background: var(--sev-1); }
+    .sev-option[data-sev="2"][aria-pressed="true"] { background: var(--sev-2); }
+    .sev-option[data-sev="3"][aria-pressed="true"] { background: var(--sev-3); }
+    .sev-option[data-sev="4"][aria-pressed="true"] { background: var(--sev-4); }
+    .sev-option[data-sev="5"][aria-pressed="true"] { background: var(--sev-5); }
+
+    .chip-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .select-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 12px;
+      border: 1px solid var(--rule-hairline);
+      border-radius: var(--radius-sm);
+      background: var(--bg-plate-alt);
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--ink-secondary);
+      transition: border-color var(--transition-ui), background-color var(--transition-ui), color var(--transition-ui);
+    }
+
+    .select-chip:hover {
+      border-color: var(--rule-strong);
+      color: var(--ink-primary);
+    }
+
+    .select-chip[aria-pressed="true"] {
+      background: var(--ink-primary);
+      border-color: var(--ink-primary);
+      color: var(--bg-plate);
+    }
+
+    .select-chip.med-chip[aria-pressed="true"] {
+      background: var(--accent-clinical-fill);
+      border-color: var(--accent-clinical);
+      color: #F4F0E7;
+    }
+
+    .med-qty-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 4px;
+      padding-left: 6px;
+      border-left: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .qty-mini-btn {
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.2);
+      color: inherit;
+      font-size: 0.78rem;
+      line-height: 1;
+      display: inline-grid;
+      place-items: center;
+    }
+
+    /* Toast Feedback */
+    .toast-region {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 360px;
+    }
+
+    .toast {
+      background: var(--bg-recap);
+      color: var(--ink-recap);
+      border: 1px solid var(--rule-recap);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      box-shadow: var(--shadow-elevated);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1120px) {
+      .workspace-split {
+        grid-template-columns: 1fr;
+      }
+      .recap-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .stats-layout,
+      .settings-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .view-panel,
+    .workspace-split > *,
+    .recap-plate-wrap,
+    .recap-plate,
+    .calendar-plate,
+    .shoulder-col,
+    .shoulder-plate {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        padding: 10px 12px;
+        gap: 10px;
+      }
+      .nav-tabs {
+        width: 100%;
+        justify-content: stretch;
+      }
+      .nav-tab {
+        flex: 1 1 0;
+        min-width: 0;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        padding: 6px 4px;
+        font-size: 0.72rem;
+        line-height: 1.2;
+        gap: 3px;
+      }
+      .recap-plate-wrap {
+        padding: 12px 12px 0 12px;
+      }
+      .recap-plate {
+        padding: 14px;
+      }
+      .recap-heading {
+        font-size: 1.3rem;
+      }
+      .recap-controls {
+        width: 100%;
+      }
+      .recap-controls .btn-primary {
+        flex: 1 1 100%;
+      }
+      .recap-kpis {
+        gap: 8px;
+      }
+      .recap-kpi {
+        padding: 10px 10px;
+      }
+      .recap-kpi-value {
+        font-size: 1.5rem;
+      }
+      .recap-footer-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .sev-dist-wrap {
+        flex: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+      }
+      .sev-dist-bar {
+        flex: none;
+        width: 100%;
+        height: 8px;
+      }
+      .workspace-split,
+      .subview-container {
+        padding: 12px;
+        gap: 14px;
+      }
+      .calendar-plate {
+        padding: 6px;
+      }
+      .calendar-grid,
+      .calendar-weekdays {
+        gap: 2px;
+      }
+      .weekday-label {
+        font-size: 0.62rem;
+        text-align: center;
+        padding-left: 0;
+      }
+      .day-cell {
+        min-height: 70px;
+        padding: 3px;
+        gap: 3px;
+      }
+      .day-num {
+        font-size: 0.76rem;
+      }
+      .today-pill {
+        display: none;
+      }
+      .day-cell.is-today .day-num {
+        color: var(--accent-primary);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      .attack-count-badge {
+        font-size: 0.58rem;
+        padding: 0 3px;
+      }
+      .day-layer-mid {
+        padding: 2px;
+        gap: 2px;
+        justify-content: center;
+      }
+      .sev-badge-num {
+        font-size: 0.56rem;
+        padding: 1px 2px;
+      }
+      .sev-pips,
+      .lat-chip,
+      .day-empty-hint {
+        display: none;
+      }
+      .day-layer-slots {
+        gap: 1px;
+      }
+      .slot-bar {
+        height: 3px;
+      }
+      .day-layer-foot {
+        min-height: 13px;
+        gap: 2px;
+      }
+      .med-pill-badge {
+        font-size: 0.6rem;
+        padding: 0 3px;
+        gap: 2px;
+      }
+      .med-pill-badge .svg-icon-sm {
+        width: 9px;
+        height: 9px;
+      }
+      .note-indicator {
+        display: none;
+      }
+      .sev-selector {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 4px;
+      }
+      .sev-option span {
+        font-size: 0.65rem;
+      }
+      .widget-4x2 {
+        grid-template-columns: 1fr;
+      }
+      .widget-4x2-stats {
+        border-left: none;
+        border-top: 1px solid var(--rule-hairline);
+        padding-left: 0;
+        padding-top: 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Navigation Bar -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-emblem" aria-hidden="true">
+          <svg class="svg-icon" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="17" rx="2"></rect>
+            <path d="M8 2v4M16 2v4M3 9h18"></path>
+            <path d="M7 15h3l1.5-3 2 5 1.5-2H18"></path>
+          </svg>
+        </div>
+        <span class="brand-title">Migraine Calendar</span>
+      </div>
+
+      <nav class="nav-tabs" role="tablist" aria-label="Sezioni applicazione">
+        <button class="nav-tab" role="tab" id="tab-calendar" aria-selected="true" data-view="calendar">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="17" rx="2"></rect>
+            <path d="M8 2v4M16 2v4M3 10h18"></path>
+          </svg>
+          <span>Calendario</span>
+        </button>
+        <button class="nav-tab" role="tab" id="tab-stats" aria-selected="false" data-view="stats">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 20V10M10 20V4M16 20v-8M22 20H2"></path>
+          </svg>
+          <span>Statistiche e Widget</span>
+        </button>
+        <button class="nav-tab" role="tab" id="tab-settings" aria-selected="false" data-view="settings">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h10M18 7h2M14 5v4M4 17h4M12 17h8M8 15v4M4 12h16"></path>
+          </svg>
+          <span>Impostazioni</span>
+        </button>
+      </nav>
+
+      <div class="topbar-actions">
+        <button class="btn btn-subtle btn-sm" id="btn-theme-toggle" type="button" title="Attiva o disattiva modalità scura anti-fotofobia">
+          <span id="theme-toggle-icon"></span>
+          <span id="theme-toggle-label">Modalità scura</span>
+        </button>
+
+        <button class="sync-pill" id="btn-topbar-sync" type="button" data-state="local" title="Sincronizzazione Google Sheets">
+          <span class="sync-dot" aria-hidden="true"></span>
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6.5 19h11a4 4 0 0 0 .8-7.9A5.5 5.5 0 0 0 7.6 9.4 4.5 4.5 0 0 0 6.5 19Z"></path>
+          </svg>
+          <span id="topbar-sync-label">Offline locale</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- VIEW 1: CALENDAR -->
+    <main id="view-calendar" class="view-panel active">
+      <!-- Dominant Monthly Recap Plate -->
+      <section class="recap-plate-wrap" aria-label="Riepilogo mensile">
+        <div class="recap-plate">
+          <div class="recap-header">
+            <div class="recap-title-group">
+              <h1 class="recap-heading" id="recap-month-title">Novembre 2026</h1>
+              <span class="recap-range" id="recap-subtitle">Riepilogo clinico mensile</span>
+              <span class="recap-range" id="recap-demo-badge" style="padding:2px 8px;border:1px solid var(--rule-recap);border-radius:3px;font-size:0.75rem;display:none;">Dati dimostrativi</span>
+            </div>
+            <div class="recap-controls">
+              <button class="recap-btn" id="btn-prev-month" type="button" aria-label="Mese precedente">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"></path></svg>
+                <span>Prec.</span>
+              </button>
+              <button class="recap-btn" id="btn-today" type="button">Oggi</button>
+              <button class="recap-btn" id="btn-next-month" type="button" aria-label="Mese successivo">
+                <span>Succ.</span>
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
+              </button>
+              <button class="btn btn-primary" id="btn-quick-log" type="button">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+                <span>Registra attacco</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="recap-kpis">
+            <div class="recap-kpi">
+              <div class="recap-kpi-top">
+                <span>Giorni con emicrania</span>
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="17" rx="2"></rect>
+                  <path d="M8 2v4M16 2v4M3 10h18M9 15h6"></path>
+                </svg>
+              </div>
+              <div class="recap-kpi-value-row">
+                <span class="recap-kpi-value" id="kpi-days">0</span>
+                <span class="recap-kpi-sub" id="kpi-days-sub">su 30 gg</span>
+              </div>
+            </div>
+
+            <div class="recap-kpi">
+              <div class="recap-kpi-top">
+                <span>Intensità media</span>
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 12h4l2.5-6 4 12 2.5-6H21"></path>
+                </svg>
+              </div>
+              <div class="recap-kpi-value-row">
+                <span class="recap-kpi-value" id="kpi-avg">0.0</span>
+                <span class="recap-kpi-sub" id="kpi-avg-sub">scala 1–5</span>
+              </div>
+            </div>
+
+            <div class="recap-kpi">
+              <div class="recap-kpi-top">
+                <span>Farmaci assunti</span>
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M10.5 20.5 19 12a4.95 4.95 0 1 0-7-7L3.5 13.5a4.95 4.95 0 1 0 7 7Z"></path>
+                  <path d="M8.5 8.5 15.5 15.5"></path>
+                </svg>
+              </div>
+              <div class="recap-kpi-value-row">
+                <span class="recap-kpi-value" id="kpi-meds">0</span>
+                <span class="recap-kpi-sub" id="kpi-meds-sub">dosi totali</span>
+              </div>
+            </div>
+
+            <div class="recap-kpi">
+              <div class="recap-kpi-top">
+                <span>Dall'ultimo episodio</span>
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 2"></path>
+                </svg>
+              </div>
+              <div class="recap-kpi-value-row">
+                <span class="recap-kpi-value" id="kpi-since">--</span>
+                <span class="recap-kpi-sub" id="kpi-since-sub">giorni liberi</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recap-footer-bar">
+            <div class="sev-dist-wrap">
+              <span class="sev-dist-label">Distribuzione intensità (1–5)</span>
+              <div class="sev-dist-bar" id="recap-sev-bar" aria-label="Distribuzione intensità mensile"></div>
+            </div>
+            <div class="recap-quick-counts" id="recap-lat-summary"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Calendar + Shoulder Split -->
+      <div class="workspace-split">
+        <section class="calendar-plate" aria-label="Calendario mensile">
+          <div class="calendar-weekdays" aria-hidden="true">
+            <div class="weekday-label">Lun</div>
+            <div class="weekday-label">Mar</div>
+            <div class="weekday-label">Mer</div>
+            <div class="weekday-label">Gio</div>
+            <div class="weekday-label">Ven</div>
+            <div class="weekday-label">Sab</div>
+            <div class="weekday-label">Dom</div>
+          </div>
+          <div class="calendar-grid" id="calendar-grid"></div>
+        </section>
+
+        <aside class="shoulder-col" aria-label="Dettaglio giorno selezionato e legenda">
+          <div class="shoulder-plate">
+            <div class="shoulder-head">
+              <div>
+                <h2 class="shoulder-title" id="shoulder-date-title">Seleziona un giorno</h2>
+                <div class="shoulder-subtitle" id="shoulder-date-subtitle">0 attacchi registrati</div>
+              </div>
+              <button class="btn btn-primary btn-sm" id="btn-shoulder-add" type="button">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+                <span>Aggiungi</span>
+              </button>
+            </div>
+            <div class="attack-list" id="shoulder-attack-list"></div>
+          </div>
+
+          <div class="shoulder-plate">
+            <div class="shoulder-head" style="padding-bottom:8px;">
+              <h2 class="shoulder-title" style="font-size:1rem;">Legenda Tavola</h2>
+            </div>
+            <div class="legend-grid">
+              <div>
+                <div style="font-weight:700;margin-bottom:6px;color:var(--ink-primary);">Intensità episodio (1–5)</div>
+                <div class="legend-scale">
+                  <span class="legend-chip"><span class="swatch" style="background:var(--sev-1)"></span>1 Lieve</span>
+                  <span class="legend-chip"><span class="swatch" style="background:var(--sev-2)"></span>2 Moderata</span>
+                  <span class="legend-chip"><span class="swatch" style="background:var(--sev-3)"></span>3 Forte</span>
+                  <span class="legend-chip"><span class="swatch" style="background:var(--sev-4)"></span>4 Severa</span>
+                  <span class="legend-chip"><span class="swatch" style="background:var(--sev-5)"></span>5 Invalidante</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-weight:700;margin-bottom:6px;color:var(--ink-primary);">Barra diurna (5 fasce)</div>
+                <div style="font-size:0.78rem;">Da sinistra a destra: Notte · Mattina · Primo pom. · Tardo pom. · Sera</div>
+              </div>
+              <div>
+                <div style="font-weight:700;margin-bottom:6px;color:var(--ink-primary);">Lateralità e marcatori</div>
+                <div class="legend-scale" id="legend-markers"></div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <!-- VIEW 2: STATS & WIDGET PREVIEW -->
+    <section id="view-stats" class="view-panel">
+      <div class="subview-container">
+        <div class="section-title-row">
+          <h1 class="section-title">Statistiche cliniche e anteprima widget</h1>
+          <button class="btn btn-subtle btn-sm" id="btn-copy-neuro-report" type="button">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>
+            <span>Copia riepilogo per neurologo</span>
+          </button>
+        </div>
+
+        <!-- Widget Previews (2x2 and 4x2) -->
+        <div class="widget-showcase">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <h2 style="font-family:var(--font-serif);font-size:1.2rem;font-weight:700;">Anteprima Widget Nativi (Fase 2 · iOS WidgetKit / macOS / Android Glance)</h2>
+            <span style="font-size:0.82rem;color:var(--ink-secondary);">Dati live calcolati dal calendario corrente</span>
+          </div>
+          <div class="widgets-grid">
+            <div class="widget-frame">
+              <span class="widget-caption">Widget compatto 2×2</span>
+              <div class="widget-2x2" id="preview-widget-2x2"></div>
+            </div>
+            <div class="widget-frame">
+              <span class="widget-caption">Widget esteso 4×2</span>
+              <div class="widget-4x2" id="preview-widget-4x2"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-layout">
+          <div class="plate-card">
+            <h2 class="plate-card-title">
+              <span>Frequenza per fascia della giornata</span>
+              <span class="tabular" id="stats-month-label" style="font-size:0.85rem;color:var(--ink-secondary);font-family:var(--font-sans);"></span>
+            </h2>
+            <div class="bar-list" id="stats-slots-bars"></div>
+          </div>
+
+          <div class="plate-card">
+            <h2 class="plate-card-title"><span>Lateralità degli attacchi</span></h2>
+            <div class="bar-list" id="stats-lat-bars"></div>
+          </div>
+
+          <div class="plate-card">
+            <h2 class="plate-card-title"><span>Consumo farmaci nel mese</span></h2>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Farmaco</th>
+                  <th>Dosi</th>
+                  <th>Attacchi coperti</th>
+                  <th>Int. media</th>
+                </tr>
+              </thead>
+              <tbody id="stats-meds-tbody"></tbody>
+            </table>
+          </div>
+
+          <div class="plate-card">
+            <h2 class="plate-card-title"><span>Andamento ultimi 6 mesi</span></h2>
+            <div id="stats-trend-svg-wrap"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: SETTINGS & GOOGLE SHEETS SYNC -->
+    <section id="view-settings" class="view-panel">
+      <div class="subview-container">
+        <div class="section-title-row">
+          <h1 class="section-title">Impostazioni, Farmaci e Sincronizzazione Google Sheets</h1>
+        </div>
+
+        <div class="settings-grid">
+          <div style="display:flex;flex-direction:column;gap:20px;">
+            <!-- Appearance / Photophobia Comfort -->
+            <div class="plate-card">
+              <h2 class="plate-card-title"><span>Comfort visivo e fotofobia</span></h2>
+              <div class="toggle-row">
+                <div>
+                  <div style="font-weight:700;">Modalità scura anti-fotofobia</div>
+                  <div style="font-size:0.82rem;color:var(--ink-secondary);">Superficie antracite opaca a basso abbagliamento per l'uso durante gli episodi acuti.</div>
+                </div>
+                <button class="switch-btn" id="settings-dark-switch" type="button" role="switch" aria-checked="false" aria-label="Attiva modalità scura anti-fotofobia">
+                  <span class="switch-thumb"></span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Local JSON Backup & Demo Reset -->
+            <div class="plate-card">
+              <h2 class="plate-card-title"><span>Backup locale JSON e gestione dati</span></h2>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+                <button class="btn" id="btn-export-json" type="button">
+                  <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"></path></svg>
+                  <span>Esporta JSON</span>
+                </button>
+                <label class="btn" for="input-import-json">
+                  <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M4 19h16"></path></svg>
+                  <span>Importa JSON</span>
+                </label>
+                <input id="input-import-json" type="file" accept="application/json,.json" style="display:none;" />
+                <button class="btn btn-subtle" id="btn-reset-demo" type="button">Ripristina dati di esempio</button>
+                <button class="btn btn-subtle" id="btn-clear-all" type="button">Cancella tutti gli episodi</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preset Medications Config -->
+          <div class="plate-card">
+            <h2 class="plate-card-title"><span>Farmaci predefiniti (Farmaci_Config)</span></h2>
+            <div class="inline-form-row">
+              <input class="input" id="new-preset-name" type="text" placeholder="Nome farmaco (es. Rizatriptan)" />
+              <input class="input" id="new-preset-dose" type="text" placeholder="Dosaggio (es. 10mg)" style="max-width:160px;" />
+              <button class="btn btn-primary" id="btn-add-preset" type="button">Aggiungi</button>
+            </div>
+            <div id="preset-meds-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+
+          <!-- Google Sheets API v4 OAuth2 Sync -->
+          <div class="plate-card" style="grid-column: 1 / -1;">
+            <h2 class="plate-card-title">
+              <span>Sincronizzazione Google Sheets (OAuth2 Web Standard · API v4)</span>
+              <span class="sync-pill" id="settings-sync-pill" data-state="local" style="pointer-events:none;">
+                <span class="sync-dot"></span>
+                <span id="settings-sync-status-text">Non connesso</span>
+              </span>
+            </h2>
+
+            <div id="oauth-origin-warning" class="notice-box warn" style="display:none;">
+              Stai aprendo il file tramite protocollo <code>file://</code>. Il salvataggio locale offline funziona normalmente, ma per completare il flusso OAuth2 di Google Sheets nel browser è necessario servire il file su un origine HTTP autorizzata (es. <code>http://localhost:8080</code> tramite <code>python3 -m http.server 8080</code>).
+            </div>
+
+            <div class="notice-box">
+              Flusso OAuth2 web standard compatibile senza Google Play Services (funziona identicamente su browser, macOS, iOS e tablet Huawei HarmonyOS). I dati restano sempre salvati istantaneamente in locale (<code>localStorage</code>) e vengono uniti bidirezionalmente con il foglio Google Drive tramite timestamp <code>Updated_At</code>.
+            </div>
+
+            <div class="settings-grid" style="gap:14px;">
+              <div class="field-group">
+                <label class="field-label" for="gs-client-id">Google OAuth Client ID (Applicazione Web)</label>
+                <input class="input" id="gs-client-id" type="text" placeholder="xxxxxxxxxxxx-xxxxxxxxxxxxxxxx.apps.googleusercontent.com" />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="gs-spreadsheet-id">Google Spreadsheet ID</label>
+                <input class="input" id="gs-spreadsheet-id" type="text" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms" />
+              </div>
+            </div>
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+              <button class="btn" id="btn-save-gs-config" type="button">Salva configurazione</button>
+              <button class="btn btn-primary" id="btn-gs-connect" type="button">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                <span>Connetti Google OAuth2</span>
+              </button>
+              <button class="btn" id="btn-gs-init-tabs" type="button">Inizializza tab Episodi e Farmaci_Config</button>
+              <button class="btn" id="btn-gs-sync-now" type="button">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-15.5-6.3L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 15.5 6.3L21 16"></path><path d="M16 16h5v5"></path></svg>
+                <span>Sincronizza ora</span>
+              </button>
+              <button class="btn btn-subtle" id="btn-gs-disconnect" type="button">Disconnetti token</button>
+            </div>
+
+            <div style="font-size:0.84rem;color:var(--ink-secondary);" id="gs-last-sync-info">
+              Ultima sincronizzazione: mai eseguita in questa sessione.
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:8px;padding-top:10px;border-top:1px solid var(--rule-hairline);">
+              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                <strong style="font-size:0.9rem;">Struttura esatta delle colonne del Google Sheet</strong>
+                <button class="btn btn-subtle btn-sm" id="btn-copy-sheet-schema" type="button">Copia intestazioni</button>
+              </div>
+              <div style="font-size:0.8rem;color:var(--ink-secondary);">Tab <strong>Episodi</strong>:</div>
+              <div class="schema-block">ID_Episodio | Data | Fasce_Giornata | Lateralita | Intensita | Farmaci | Note | Updated_At | Deleted</div>
+              <div style="font-size:0.8rem;color:var(--ink-secondary);">Tab <strong>Farmaci_Config</strong>:</div>
+              <div class="schema-block">ID_Farmaco | Nome | Dosaggio | Attivo | Ordine | Updated_At</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Day Detail / Attack Editor Modal -->
+  <dialog class="attack-dialog" id="day-modal" aria-labelledby="modal-date-heading">
+    <div class="dialog-inner">
+      <div class="dialog-head">
+        <div>
+          <h2 class="dialog-title" id="modal-date-heading">Dettaglio Giorno</h2>
+          <div style="font-size:0.82rem;color:var(--ink-secondary);" id="modal-day-sub"></div>
+        </div>
+        <button class="icon-btn" id="btn-close-modal" type="button" aria-label="Chiudi scheda">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <div class="dialog-body">
+        <div class="toggle-row">
+          <div>
+            <div style="font-weight:700;">Emicrania presente</div>
+            <div style="font-size:0.8rem;color:var(--ink-secondary);">Attiva per registrare uno o più attacchi in questa data.</div>
+          </div>
+          <button class="switch-btn" id="modal-migraine-switch" type="button" role="switch" aria-checked="true" aria-label="Emicrania presente">
+            <span class="switch-thumb"></span>
+          </button>
+        </div>
+
+        <div id="modal-editor-fields" style="display:flex;flex-direction:column;gap:16px;">
+          <!-- Multi-attack switcher for this day -->
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+              <span class="field-label">Attacchi in questa giornata</span>
+              <button class="btn btn-subtle btn-sm" id="btn-modal-new-attack" type="button">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+                <span>Aggiungi attacco</span>
+              </button>
+            </div>
+            <div class="day-attack-tabs" id="modal-attack-tabs"></div>
+          </div>
+
+          <!-- Intensity 1-5 -->
+          <div class="field-group">
+            <span class="field-label">Intensità del dolore</span>
+            <div class="sev-selector" id="modal-sev-selector"></div>
+          </div>
+
+          <!-- Time of day slots (multi-select) -->
+          <div class="field-group">
+            <span class="field-label">Fasce della giornata (selezione multipla)</span>
+            <div class="chip-grid" id="modal-slots-grid"></div>
+          </div>
+
+          <!-- Laterality -->
+          <div class="field-group">
+            <span class="field-label">Lateralità</span>
+            <div class="chip-grid" id="modal-lat-grid"></div>
+          </div>
+
+          <!-- Medications -->
+          <div class="field-group">
+            <span class="field-label">Farmaci assunti per questo attacco</span>
+            <div class="chip-grid" id="modal-meds-grid"></div>
+            <div class="inline-form-row" style="margin-top:6px;">
+              <input class="input" id="modal-adhoc-med-name" type="text" placeholder="Altro farmaco al volo (es. Naprossene)" />
+              <input class="input" id="modal-adhoc-med-dose" type="text" placeholder="Dosaggio (es. 550mg)" style="max-width:190px;flex:0 1 190px;" />
+              <button class="btn btn-subtle" id="btn-modal-add-adhoc" type="button">Aggiungi</button>
+            </div>
+            <label style="display:inline-flex;align-items:center;gap:6px;font-size:0.78rem;color:var(--ink-secondary);margin-top:2px;">
+              <input type="checkbox" id="chk-save-adhoc-preset" checked />
+              <span>Salva anche nei farmaci predefiniti</span>
+            </label>
+          </div>
+
+          <!-- Notes -->
+          <div class="field-group">
+            <label class="field-label" for="modal-notes-input">Note brevi (trigger, aura, sintomi)</label>
+            <textarea class="input" id="modal-notes-input" rows="2" placeholder="Es. Sonno interrotto, tensione cervicale, fotofobia intensa"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-foot">
+        <button class="btn btn-subtle" id="btn-modal-delete-attack" type="button" style="color:var(--sev-5);">Elimina questo attacco</button>
+        <div style="display:flex;gap:8px;margin-left:auto;">
+          <button class="btn" id="btn-modal-cancel" type="button">Annulla</button>
+          <button class="btn btn-primary" id="btn-modal-save" type="button">Salva scheda</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast-region" id="toast-region" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* -------------------------------------------------------------------
+         CONSTANTS & SCHEMAS
+      ------------------------------------------------------------------- */
+      const STORAGE_KEY = "migraine_calendar_state_v1";
+      const REFERENCE_TODAY = "2026-11-25";
+
+      const MONTHS_IT = [
+        "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
+        "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"
+      ];
+      const WEEKDAYS_IT = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+
+      const SEVERITY_LABELS = {
+        1: "Lieve",
+        2: "Moderata",
+        3: "Forte",
+        4: "Severa",
+        5: "Invalidante"
+      };
+
+      const TIME_SLOTS = [
+        { id: "notte", label: "Notte", short: "N" },
+        { id: "mattina", label: "Mattina", short: "M" },
+        { id: "primo_pomeriggio", label: "Primo pomeriggio", short: "PP" },
+        { id: "tardo_pomeriggio", label: "Tardo pomeriggio", short: "TP" },
+        { id: "sera", label: "Sera", short: "S" }
+      ];
+
+      const LATERALITIES = [
+        { id: "sinistra", label: "Sinistra", short: "Sin" },
+        { id: "destra", label: "Destra", short: "Des" },
+        { id: "entrambi", label: "Entrambi", short: "Bil" },
+        { id: "ignora", label: "Ignora", short: "--" }
+      ];
+
+      /* -------------------------------------------------------------------
+         CUSTOM 100% INLINE SVG VECTOR ICONS (viewBox="0 0 24 24")
+      ------------------------------------------------------------------- */
+      function svgSlotIcon(slotId) {
+        switch (slotId) {
+          case "notte":
+            return '<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 14.5A7 7 0 0 1 9.5 6a7 7 0 1 0 8.5 8.5Z"></path></svg>';
+          case "mattina":
+            return '<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17h18M7 17a5 5 0 0 1 10 0M12 5v3M5.6 10.6l2.1 2.1M18.4 10.6l-2.1 2.1"></path></svg>';
+          case "primo_pomeriggio":
+            return '<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"></path></svg>';
+          case "tardo_pomeriggio":
+            return '<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16h18M7 16a5 5 0 0 1 10 0M12 20v-1M5 12l2 1M19 12l-2 1"></path></svg>';
+          case "sera":
+          default:
+            return '<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18h16M16.5 14A5.5 5.5 0 0 1 10 6.5a5.5 5.5 0 1 0 6.5 7.5Z"></path><path d="M18 5v2M17 6h2"></path></svg>';
+        }
+      }
+
+      function svgLateralityIcon(latId, extraClass) {
+        const cls = extraClass ? "svg-icon " + extraClass : "svg-icon svg-icon-sm";
+        if (latId === "sinistra") {
+          return '<svg class="' + cls + '" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 3.5a8.5 8.5 0 0 0 0 17Z" fill="currentColor" stroke="none"></path><path d="M12 3.5v17"></path></svg>';
+        }
+        if (latId === "destra") {
+          return '<svg class="' + cls + '" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 3.5a8.5 8.5 0 0 1 0 17Z" fill="currentColor" stroke="none"></path><path d="M12 3.5v17"></path></svg>';
+        }
+        if (latId === "entrambi") {
+          return '<svg class="' + cls + '" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="currentColor" fill-opacity="0.28"></circle><circle cx="12" cy="12" r="8.5"></circle><path d="M12 3.5v17"></path></svg>';
+        }
+        return '<svg class="' + cls + '" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke-dasharray="3 3"></circle></svg>';
+      }
+
+      function svgPillIcon() {
+        return '<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 20.5 19 12a4.95 4.95 0 1 0-7-7L3.5 13.5a4.95 4.95 0 1 0 7 7Z"></path><path d="M8.5 8.5 15.5 15.5"></path></svg>';
+      }
+
+      function svgNoteIcon() {
+        return '<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"></path><path d="M8 9h8M8 13h8M8 17h5"></path></svg>';
+      }
+
+      function svgThemeIcon(theme) {
+        if (theme === "dark") {
+          return '<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>';
+        }
+        return '<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5Z"></path></svg>';
+      }
+
+      /* -------------------------------------------------------------------
+         DEFAULT SAMPLE DATA (NO EMOJI, REALISTIC ITALIAN CLINICAL DIARY)
+      ------------------------------------------------------------------- */
+      function getDefaultPresets() {
+        return [
+          { id: "med-ibu", nome: "Ibuprofene", dosaggio: "400mg", attivo: true, ordine: 1, updatedAt: "2026-10-01T08:00:00Z" },
+          { id: "med-suma", nome: "Sumatriptan", dosaggio: "50mg", attivo: true, ordine: 2, updatedAt: "2026-10-01T08:00:00Z" },
+          { id: "med-riza", nome: "Rizatriptan", dosaggio: "10mg", attivo: true, ordine: 3, updatedAt: "2026-10-01T08:00:00Z" },
+          { id: "med-para", nome: "Paracetamolo", dosaggio: "1000mg", attivo: true, ordine: 4, updatedAt: "2026-10-01T08:00:00Z" }
+        ];
+      }
+
+      function getDefaultEpisodes() {
+        return [
+          {
+            id: "ep-20261005-1",
+            date: "2026-10-05",
+            slots: ["mattina", "primo_pomeriggio"],
+            laterality: "sinistra",
+            intensity: 3,
+            meds: [{ name: "Ibuprofene", dose: "400mg", qty: 1 }],
+            notes: "Dolore pulsante temporale sinistro dopo notte breve.",
+            updatedAt: "2026-10-05T14:00:00Z",
+            deleted: false
+          },
+          {
+            id: "ep-20261014-1",
+            date: "2026-10-14",
+            slots: ["tardo_pomeriggio", "sera"],
+            laterality: "destra",
+            intensity: 4,
+            meds: [{ name: "Sumatriptan", dose: "50mg", qty: 1 }],
+            notes: "Cambio pressione atmosferica, fotofobia moderata.",
+            updatedAt: "2026-10-14T21:10:00Z",
+            deleted: false
+          },
+          {
+            id: "ep-20261022-1",
+            date: "2026-10-22",
+            slots: ["notte"],
+            laterality: "sinistra",
+            intensity: 2,
+            meds: [],
+            notes: "Risveglio con fastidio lieve, rientrato con riposo al buio.",
+            updatedAt: "2026-10-22T07:30:00Z",
+            deleted: false
+          },
+          {
+            id: "ep-20261029-1",
+            date: "2026-10-29",
+            slots: ["mattina"],
+            laterality: "entrambi",
+            intensity: 3,
+            meds: [{ name: "Paracetamolo", dose: "1000mg", qty: 1 }],
+            notes: "Tensione cervicale bilaterale al risveglio.",
+            updatedAt: "2026-10-29T10:15:00Z",
+            deleted: false
+          },
+          {
+            id: "ep-20261104-1",
+            date: "2026-11-04",
+            slots: ["mattina", "primo_pomeriggio"],
+            laterality: "sinistra",
+            intensity: 2,
+            meds: [{ name: "Ibuprofene", dose: "400mg", qty: 1 }],
+            notes: "Lieve pesantezza sopra l'occhio sinistro.",
+            updatedAt: "2026-11-04T13:20:00Z",
+            deleted: false
+          },
+          {
+            id: "ep-20261108-1",
+            date: "2026-11-08",
+            slots: ["primo_pomeriggio", "tardo_pomeriggio"],
+            laterality: "entrambi",
+            intensity: 4,
+            meds: [{ name: "Sumatriptan", dose: "50mg", qty: 1 }, { name: "Ibuprofene", dose: "400mg", qty: 1 }],
+            notes: "Forte dolore bilaterale con nausea lieve.",
+            updatedAt: "2026-11-08T18:45:00Z",
+            deleted: false
+          },
+          {
+            id: "ep-20261112-1",
+            date: "2026-11-12",
+            slots: ["notte", "mattina"],
+            laterality: "destra",
+            intensity: 3,
+            meds: [{ name: "Rizatriptan", dose: "10mg", qty: 1 }],
+            notes: "Esordio notturno lato destro, miglioramento entro due ore dal farmaco.",
+            updatedAt: "2026-11-12T09:00:00Z",
+            deleted: false
+          },
+          {
+            id: "ep-20261118-1",
+            date: "2026-11-18",
+            slots: ["mattina", "primo_pomeriggio", "tardo_pomeriggio"],
+            laterality: "entrambi",
+            intensity: 5,
+            meds: [{ name: "Sumatriptan", dose: "50mg", qty: 2 }],
+            notes: "Attacco invalidante con aura visiva iniziale e intensa fotofobia.",
+            updatedAt: "2026-11-18T19:30:00Z",
+            deleted: false
+          },
+          {
+            id: "ep-20261121-1",
+            date: "2026-11-21",
+            slots: ["mattina"],
+            laterality: "sinistra",
+            intensity: 2,
+            meds: [{ name: "Ibuprofene", dose: "400mg", qty: 1 }],
+            notes: "Primo attacco mattutino risolto parzialmente.",
+            updatedAt: "2026-11-21T10:00:00Z",
+            deleted: false
+          },
+          {
+            id: "ep-20261121-2",
+            date: "2026-11-21",
+            slots: ["tardo_pomeriggio", "sera"],
+            laterality: "entrambi",
+            intensity: 4,
+            meds: [{ name: "Sumatriptan", dose: "50mg", qty: 1 }],
+            notes: "Ripresa serale piu intensa su entrambe le tempie.",
+            updatedAt: "2026-11-21T20:15:00Z",
+            deleted: false
+          }
+        ];
+      }
+
+      /* -------------------------------------------------------------------
+         STATE MANAGEMENT & PERSISTENCE
+      ------------------------------------------------------------------- */
+      let state = loadState();
+      let currentView = "calendar";
+      let viewYear = 2026;
+      let viewMonth = 10; // 0-indexed (10 = Novembre 2026)
+      let selectedDate = REFERENCE_TODAY;
+
+      // Modal editing state
+      let modalDate = REFERENCE_TODAY;
+      let modalDraftAttacks = [];
+      let modalActiveAttackIdx = 0;
+
+      function getDefaultState() {
+        return {
+          theme: "light",
+          isDemo: true,
+          episodes: getDefaultEpisodes(),
+          presets: getDefaultPresets(),
+          sync: {
+            clientId: "805103364027-ci8325s70uei7o3ol9dsfop4c8oifhgn.apps.googleusercontent.com",
+            spreadsheetId: "1_dfcUK6kFL1hW5_An35TRVZ8hGgiNpwbAHddwVkk5yM",
+            accessToken: "",
+            tokenExpiresAt: 0,
+            lastSyncAt: null,
+            status: "local"
+          }
+        };
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            const def = getDefaultState();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(def));
+            return def;
+          }
+          const parsed = JSON.parse(raw);
+          const def = getDefaultState();
+          return {
+            theme: parsed.theme === "dark" ? "dark" : "light",
+            isDemo: Boolean(parsed.isDemo),
+            episodes: Array.isArray(parsed.episodes) ? parsed.episodes : def.episodes,
+            presets: Array.isArray(parsed.presets) ? parsed.presets : def.presets,
+            sync: Object.assign({}, def.sync, parsed.sync || {})
+          };
+        } catch (err) {
+          return getDefaultState();
+        }
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (err) {
+          showToast("Impossibile salvare nello storage locale del browser.");
+        }
+      }
+
+      function showToast(msg) {
+        const region = document.getElementById("toast-region");
+        const el = document.createElement("div");
+        el.className = "toast";
+        el.innerHTML = '<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>';
+        const span = document.createElement("span");
+        span.textContent = msg;
+        el.appendChild(span);
+        region.appendChild(el);
+        setTimeout(() => {
+          el.remove();
+        }, 3600);
+      }
+
+      /* -------------------------------------------------------------------
+         DATE & COMPUTATION HELPERS
+      ------------------------------------------------------------------- */
+      function pad2(n) {
+        return n < 10 ? "0" + n : String(n);
+      }
+
+      function toIsoDate(y, mZeroIndexed, d) {
+        return y + "-" + pad2(mZeroIndexed + 1) + "-" + pad2(d);
+      }
+
+      function parseIsoDate(iso) {
+        const parts = iso.split("-").map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+      }
+
+      function formatItalianDateFull(iso) {
+        const dt = parseIsoDate(iso);
+        return WEEKDAYS_IT[dt.getDay()] + " " + dt.getDate() + " " + MONTHS_IT[dt.getMonth()] + " " + dt.getFullYear();
+      }
+
+      function getTodayIso() {
+        const now = new Date();
+        // Use real browser date; if viewing demo Nov 2026 context, keep accurate today calculation
+        return toIsoDate(now.getFullYear(), now.getMonth(), now.getDate());
+      }
+
+      function activeEpisodes() {
+        return state.episodes.filter(e => !e.deleted);
+      }
+
+      function episodesByDate(iso) {
+        return activeEpisodes().filter(e => e.date === iso);
+      }
+
+      function episodesInMonth(y, mZero) {
+        const prefix = y + "-" + pad2(mZero + 1) + "-";
+        return activeEpisodes().filter(e => e.date.startsWith(prefix));
+      }
+
+      function totalMedsInEpisode(ep) {
+        return (ep.meds || []).reduce((sum, m) => sum + (Number(m.qty) || 1), 0);
+      }
+
+      function computeDaysSinceLastEpisode() {
+        const todayIso = getTodayIso();
+        const todayDt = parseIsoDate(todayIso);
+        const pastOrToday = activeEpisodes()
+          .map(e => e.date)
+          .filter(d => d <= todayIso)
+          .sort();
+        if (pastOrToday.length === 0) return null;
+        const lastIso = pastOrToday[pastOrToday.length - 1];
+        const lastDt = parseIsoDate(lastIso);
+        const diffMs = todayDt.getTime() - lastDt.getTime();
+        return Math.max(0, Math.round(diffMs / 86400000));
+      }
+
+      function computeMonthMetrics(y, mZero) {
+        const eps = episodesInMonth(y, mZero);
+        const daysSet = new Set(eps.map(e => e.date));
+        const daysCount = daysSet.size;
+        const attacksCount = eps.length;
+        const avgIntensity = attacksCount > 0
+          ? eps.reduce((s, e) => s + Number(e.intensity || 1), 0) / attacksCount
+          : 0;
+        const medsCount = eps.reduce((s, e) => s + totalMedsInEpisode(e), 0);
+
+        const sevCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+        const latCounts = { sinistra: 0, destra: 0, entrambi: 0, ignora: 0 };
+        eps.forEach(e => {
+          const sev = Math.min(5, Math.max(1, Number(e.intensity || 1)));
+          sevCounts[sev]++;
+          const lat = latCounts.hasOwnProperty(e.laterality) ? e.laterality : "ignora";
+          latCounts[lat]++;
+        });
+
+        const daysInM = new Date(y, mZero + 1, 0).getDate();
+        return {
+          daysCount,
+          attacksCount,
+          avgIntensity,
+          medsCount,
+          sevCounts,
+          latCounts,
+          daysInM,
+          episodes: eps
+        };
+      }
+
+      /* -------------------------------------------------------------------
+         THEME & NAVIGATION
+      ------------------------------------------------------------------- */
+      function applyTheme() {
+        document.documentElement.setAttribute("data-theme", state.theme);
+        const iconEl = document.getElementById("theme-toggle-icon");
+        const labelEl = document.getElementById("theme-toggle-label");
+        const switchEl = document.getElementById("settings-dark-switch");
+        iconEl.innerHTML = svgThemeIcon(state.theme);
+        labelEl.textContent = state.theme === "dark" ? "Carta chiara" : "Modalità scura";
+        switchEl.setAttribute("aria-checked", state.theme === "dark" ? "true" : "false");
+      }
+
+      function toggleTheme() {
+        state.theme = state.theme === "dark" ? "light" : "dark";
+        saveState();
+        applyTheme();
+      }
+
+      function switchView(viewName) {
+        currentView = viewName;
+        document.querySelectorAll(".nav-tab").forEach(btn => {
+          btn.setAttribute("aria-selected", btn.dataset.view === viewName ? "true" : "false");
+        });
+        document.querySelectorAll(".view-panel").forEach(panel => {
+          panel.classList.toggle("active", panel.id === "view-" + viewName);
+        });
+        if (viewName === "stats") renderStatsAndWidgets();
+        if (viewName === "settings") renderSettings();
+      }
+
+      /* -------------------------------------------------------------------
+         RENDER: RECAP PLATE & CALENDAR & SHOULDER
+      ------------------------------------------------------------------- */
+      function renderAll() {
+        applyTheme();
+        renderRecapPlate();
+        renderCalendarGrid();
+        renderShoulderPanel();
+        renderLegend();
+        updateSyncStatusUI();
+        if (currentView === "stats") renderStatsAndWidgets();
+        if (currentView === "settings") renderSettings();
+      }
+
+      function renderRecapPlate() {
+        const m = computeMonthMetrics(viewYear, viewMonth);
+        const since = computeDaysSinceLastEpisode();
+
+        document.getElementById("recap-month-title").textContent = MONTHS_IT[viewMonth] + " " + viewYear;
+        document.getElementById("recap-subtitle").textContent = m.attacksCount > 0
+          ? m.attacksCount + (m.attacksCount === 1 ? " attacco registrato nel mese" : " attacchi registrati nel mese")
+          : "Nessun episodio registrato in questo mese";
+        const demoBadge = document.getElementById("recap-demo-badge");
+        if (demoBadge) demoBadge.style.display = state.isDemo ? "inline-block" : "none";
+
+        document.getElementById("kpi-days").textContent = String(m.daysCount);
+        document.getElementById("kpi-days-sub").textContent = "su " + m.daysInM + " gg · " + m.attacksCount + " att.";
+
+        document.getElementById("kpi-avg").textContent = m.attacksCount > 0 ? m.avgIntensity.toFixed(1) : "0.0";
+        const roundedSev = Math.round(m.avgIntensity);
+        document.getElementById("kpi-avg-sub").textContent = m.attacksCount > 0
+          ? "/ 5 (" + (SEVERITY_LABELS[roundedSev] || "Lieve") + ")"
+          : "scala 1–5";
+
+        document.getElementById("kpi-meds").textContent = String(m.medsCount);
+        document.getElementById("kpi-meds-sub").textContent = m.medsCount === 1 ? "dose assunta" : "dosi assunte";
+
+        document.getElementById("kpi-since").textContent = since === null ? "--" : String(since);
+        document.getElementById("kpi-since-sub").textContent = since === null
+          ? "nessun dato"
+          : (since === 0 ? "episodio oggi" : (since === 1 ? "giorno fa" : "giorni fa"));
+
+        // Distribution bar
+        const bar = document.getElementById("recap-sev-bar");
+        bar.innerHTML = "";
+        if (m.attacksCount > 0) {
+          [1, 2, 3, 4, 5].forEach(lvl => {
+            const count = m.sevCounts[lvl];
+            if (count > 0) {
+              const seg = document.createElement("div");
+              seg.className = "sev-dist-seg";
+              seg.style.width = ((count / m.attacksCount) * 100).toFixed(1) + "%";
+              seg.style.background = "var(--sev-" + lvl + ")";
+              seg.title = "Intensità " + lvl + " (" + SEVERITY_LABELS[lvl] + "): " + count;
+              bar.appendChild(seg);
+            }
+          });
+        }
+
+        // Laterality summary counts
+        const latWrap = document.getElementById("recap-lat-summary");
+        latWrap.innerHTML = "";
+        LATERALITIES.forEach(lat => {
+          const cnt = m.latCounts[lat.id] || 0;
+          if (cnt > 0) {
+            const item = document.createElement("span");
+            item.className = "recap-quick-item";
+            item.innerHTML = svgLateralityIcon(lat.id, "svg-icon-sm") + "<span>" + lat.label + ": " + cnt + "</span>";
+            latWrap.appendChild(item);
+          }
+        });
+      }
+
+      function renderCalendarGrid() {
+        const grid = document.getElementById("calendar-grid");
+        grid.innerHTML = "";
+
+        const firstOfMonth = new Date(viewYear, viewMonth, 1);
+        const startDayMonBased = (firstOfMonth.getDay() + 6) % 7; // Mon=0..Sun=6
+        const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+        const prevMonthDays = new Date(viewYear, viewMonth, 0).getDate();
+        const totalCells = Math.ceil((startDayMonBased + daysInMonth) / 7) * 7;
+        const todayIso = getTodayIso();
+
+        for (let i = 0; i < totalCells; i++) {
+          let cellYear = viewYear;
+          let cellMonth = viewMonth;
+          let cellDay;
+          let isOutside = false;
+
+          if (i < startDayMonBased) {
+            cellDay = prevMonthDays - startDayMonBased + i + 1;
+            cellMonth = viewMonth - 1;
+            if (cellMonth < 0) { cellMonth = 11; cellYear--; }
+            isOutside = true;
+          } else if (i >= startDayMonBased + daysInMonth) {
+            cellDay = i - (startDayMonBased + daysInMonth) + 1;
+            cellMonth = viewMonth + 1;
+            if (cellMonth > 11) { cellMonth = 0; cellYear++; }
+            isOutside = true;
+          } else {
+            cellDay = i - startDayMonBased + 1;
+          }
+
+          const iso = toIsoDate(cellYear, cellMonth, cellDay);
+          const dayEps = episodesByDate(iso);
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "day-cell";
+          if (isOutside) btn.classList.add("outside");
+          if (iso === selectedDate) btn.classList.add("selected");
+
+          const isToday = iso === todayIso;
+          if (isToday) btn.classList.add("is-today");
+          let peakSev = 0;
+          let totalMeds = 0;
+          let hasNotes = false;
+          const slotPeakSev = { notte: 0, mattina: 0, primo_pomeriggio: 0, tardo_pomeriggio: 0, sera: 0 };
+          const latSet = new Set();
+
+          dayEps.forEach(ep => {
+            const sev = Number(ep.intensity || 1);
+            if (sev > peakSev) peakSev = sev;
+            totalMeds += totalMedsInEpisode(ep);
+            if (ep.notes && ep.notes.trim().length > 0) hasNotes = true;
+            if (ep.laterality && ep.laterality !== "ignora") latSet.add(ep.laterality);
+            (ep.slots || []).forEach(sl => {
+              if (slotPeakSev.hasOwnProperty(sl) && sev > slotPeakSev[sl]) {
+                slotPeakSev[sl] = sev;
+              }
+            });
+          });
+
+          if (dayEps.length > 0) {
+            btn.classList.add("has-episodes", "sev-level-" + peakSev);
+          }
+
+          // Layer 1: Day Header
+          let html = '<div class="day-layer-head">';
+          html += '<span class="day-num-wrap"><span class="day-num">' + cellDay + '</span>';
+          if (isToday) html += '<span class="today-pill">Oggi</span>';
+          html += '</span>';
+          if (dayEps.length > 1) {
+            html += '<span class="attack-count-badge" title="' + dayEps.length + ' attacchi">' + dayEps.length + 'x</span>';
+          }
+          html += '</div>';
+
+          if (dayEps.length > 0) {
+            // Layer 2: Severity meter + Laterality vector
+            let latDisplay = "ignora";
+            if (latSet.size > 1 || latSet.has("entrambi")) latDisplay = "entrambi";
+            else if (latSet.size === 1) latDisplay = Array.from(latSet)[0];
+            const latObj = LATERALITIES.find(l => l.id === latDisplay) || LATERALITIES[3];
+
+            let pipsHtml = '<span class="sev-pips" aria-hidden="true">';
+            for (let p = 1; p <= 5; p++) {
+              pipsHtml += '<span class="sev-pip' + (p <= peakSev ? " filled-" + peakSev : "") + '"></span>';
+            }
+            pipsHtml += '</span>';
+
+            html += '<div class="day-layer-mid">';
+            html += '<span class="sev-meter-group"><span class="sev-badge-num sev-bg-' + peakSev + '">' + peakSev + '/5</span>' + pipsHtml + '</span>';
+            if (latDisplay !== "ignora") {
+              html += '<span class="lat-chip" title="Lateralità: ' + latObj.label + '">' + svgLateralityIcon(latDisplay, "svg-icon-sm") + '<span>' + latObj.short + '</span></span>';
+            }
+            html += '</div>';
+
+            // Layer 3: Diurnal 5-Slot Cadence Strip
+            html += '<div class="day-layer-slots" title="Fasce: Notte, Mattina, Primo pom., Tardo pom., Sera">';
+            TIME_SLOTS.forEach(sl => {
+              const sSev = slotPeakSev[sl.id];
+              html += '<span class="slot-bar' + (sSev > 0 ? " active sev-" + sSev : "") + '"></span>';
+            });
+            html += '</div>';
+
+            // Layer 4: Medication & Notes footer
+            html += '<div class="day-layer-foot">';
+            if (totalMeds > 0) {
+              html += '<span class="med-pill-badge" title="' + totalMeds + ' dosi assunte">' + svgPillIcon() + '<span>' + totalMeds + '</span></span>';
+            }
+            if (hasNotes) {
+              html += '<span class="note-indicator" title="Note presenti">' + svgNoteIcon() + '</span>';
+            }
+            html += '</div>';
+          } else {
+            html += '<div class="day-layer-foot"><span class="day-empty-hint"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg><span>Registra</span></span></div>';
+          }
+
+          btn.innerHTML = html;
+          btn.setAttribute("aria-label", formatItalianDateFull(iso) + (dayEps.length > 0 ? ", " + dayEps.length + " attacchi" : ", nessun attacco"));
+
+          btn.addEventListener("click", () => {
+            selectedDate = iso;
+            if (isOutside) {
+              viewYear = cellYear;
+              viewMonth = cellMonth;
+            }
+            renderCalendarGrid();
+            renderShoulderPanel();
+            renderRecapPlate();
+            // Open modal directly on click as requested ("Cliccando su un giorno si apre un pannello/modale pulito")
+            openDayModal(iso);
+          });
+
+          grid.appendChild(btn);
+        }
+      }
+
+      function renderShoulderPanel() {
+        const eps = episodesByDate(selectedDate);
+        document.getElementById("shoulder-date-title").textContent = formatItalianDateFull(selectedDate);
+        document.getElementById("shoulder-date-subtitle").textContent = eps.length === 0
+          ? "Nessun episodio registrato"
+          : (eps.length === 1 ? "1 attacco registrato" : eps.length + " attacchi registrati");
+
+        const list = document.getElementById("shoulder-attack-list");
+        list.innerHTML = "";
+
+        if (eps.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "empty-day-box";
+          empty.innerHTML = '<svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M8 2v4M16 2v4M3 10h18M9 15h6"></path></svg>' +
+            '<span>Nessuna emicrania registrata in questa giornata.</span>' +
+            '<button class="btn btn-primary btn-sm" type="button" id="btn-empty-add">Registra attacco</button>';
+          list.appendChild(empty);
+          empty.querySelector("#btn-empty-add").addEventListener("click", () => openDayModal(selectedDate));
+          return;
+        }
+
+        eps.forEach((ep, idx) => {
+          const card = document.createElement("div");
+          card.className = "attack-item";
+          const latObj = LATERALITIES.find(l => l.id === ep.laterality) || LATERALITIES[3];
+          const sev = Math.min(5, Math.max(1, Number(ep.intensity || 1)));
+
+          let html = '<div class="attack-item-head">';
+          html += '<span class="attack-sev-tag sev-bg-' + sev + '">Attacco ' + (idx + 1) + ' · ' + sev + '/5 ' + SEVERITY_LABELS[sev] + '</span>';
+          html += '<div class="attack-actions">';
+          html += '<button class="icon-btn" type="button" data-action="edit" aria-label="Modifica attacco"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button>';
+          html += '<button class="icon-btn danger" type="button" data-action="delete" aria-label="Elimina attacco"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"></path></svg></button>';
+          html += '</div></div>';
+
+          html += '<div class="attack-meta-row">';
+          (ep.slots || []).forEach(slId => {
+            const slObj = TIME_SLOTS.find(s => s.id === slId);
+            if (slObj) {
+              html += '<span class="meta-chip">' + svgSlotIcon(slId) + '<span>' + slObj.label + '</span></span>';
+            }
+          });
+          if (ep.laterality && ep.laterality !== "ignora") {
+            html += '<span class="meta-chip">' + svgLateralityIcon(ep.laterality, "svg-icon-sm") + '<span>' + latObj.label + '</span></span>';
+          }
+          html += '</div>';
+
+          if (ep.meds && ep.meds.length > 0) {
+            html += '<div class="attack-meta-row">';
+            ep.meds.forEach(m => {
+              const qtyLabel = m.qty > 1 ? " ×" + m.qty : "";
+              html += '<span class="meta-chip med">' + svgPillIcon() + '<span>' + escapeHtml(m.name) + " " + escapeHtml(m.dose) + qtyLabel + '</span></span>';
+            });
+            html += '</div>';
+          }
+
+          if (ep.notes && ep.notes.trim()) {
+            html += '<div class="attack-note">' + escapeHtml(ep.notes) + '</div>';
+          }
+
+          card.innerHTML = html;
+          card.querySelector('[data-action="edit"]').addEventListener("click", () => openDayModal(selectedDate, idx));
+          card.querySelector('[data-action="delete"]').addEventListener("click", () => deleteEpisodeById(ep.id));
+          list.appendChild(card);
+        });
+      }
+
+      function renderLegend() {
+        const el = document.getElementById("legend-markers");
+        el.innerHTML =
+          '<span class="legend-chip">' + svgLateralityIcon("sinistra", "svg-icon-sm") + ' Sinistra</span>' +
+          '<span class="legend-chip">' + svgLateralityIcon("destra", "svg-icon-sm") + ' Destra</span>' +
+          '<span class="legend-chip">' + svgLateralityIcon("entrambi", "svg-icon-sm") + ' Entrambi</span>' +
+          '<span class="legend-chip">' + svgPillIcon() + ' Farmaci</span>' +
+          '<span class="legend-chip">' + svgNoteIcon() + ' Note</span>';
+      }
+
+      /* -------------------------------------------------------------------
+         DAY DETAIL / MULTI-ATTACK MODAL EDITOR
+      ------------------------------------------------------------------- */
+      function createBlankAttack(dateIso) {
+        return {
+          id: "ep-" + dateIso.replace(/-/g, "") + "-" + Math.random().toString(36).slice(2, 7),
+          date: dateIso,
+          slots: ["mattina"],
+          laterality: "ignora",
+          intensity: 3,
+          meds: [],
+          notes: "",
+          updatedAt: new Date().toISOString(),
+          deleted: false
+        };
+      }
+
+      function openDayModal(dateIso, focusAttackIndex) {
+        modalDate = dateIso;
+        selectedDate = dateIso;
+        const existing = episodesByDate(dateIso).map(e => JSON.parse(JSON.stringify(e)));
+        modalDraftAttacks = existing.length > 0 ? existing : [createBlankAttack(dateIso)];
+        modalActiveAttackIdx = typeof focusAttackIndex === "number" && focusAttackIndex < modalDraftAttacks.length
+          ? focusAttackIndex
+          : 0;
+
+        document.getElementById("modal-date-heading").textContent = formatItalianDateFull(dateIso);
+        const switchEl = document.getElementById("modal-migraine-switch");
+        switchEl.setAttribute("aria-checked", "true");
+        document.getElementById("modal-editor-fields").style.display = "flex";
+
+        renderModalBody();
+        const dlg = document.getElementById("day-modal");
+        if (!dlg.open) dlg.showModal();
+      }
+
+      function closeDayModal() {
+        const dlg = document.getElementById("day-modal");
+        if (dlg.open) dlg.close();
+      }
+
+      function renderModalBody() {
+        const isOn = document.getElementById("modal-migraine-switch").getAttribute("aria-checked") === "true";
+        document.getElementById("modal-editor-fields").style.display = isOn ? "flex" : "none";
+        document.getElementById("btn-modal-delete-attack").style.display = isOn ? "inline-flex" : "none";
+        document.getElementById("modal-day-sub").textContent = isOn
+          ? modalDraftAttacks.length + (modalDraftAttacks.length === 1 ? " attacco in scheda" : " attacchi in scheda")
+          : "Giornata segnata senza emicrania";
+
+        if (!isOn) return;
+
+        const atk = modalDraftAttacks[modalActiveAttackIdx];
+
+        // Attack tabs
+        const tabsWrap = document.getElementById("modal-attack-tabs");
+        tabsWrap.innerHTML = "";
+        modalDraftAttacks.forEach((item, idx) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "attack-tab-pill" + (idx === modalActiveAttackIdx ? " active" : "");
+          b.textContent = "Attacco " + (idx + 1) + " · Int. " + item.intensity;
+          b.addEventListener("click", () => {
+            modalActiveAttackIdx = idx;
+            renderModalBody();
+          });
+          tabsWrap.appendChild(b);
+        });
+
+        // Severity 1-5
+        const sevWrap = document.getElementById("modal-sev-selector");
+        sevWrap.innerHTML = "";
+        [1, 2, 3, 4, 5].forEach(lvl => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "sev-option";
+          b.dataset.sev = String(lvl);
+          b.setAttribute("aria-pressed", Number(atk.intensity) === lvl ? "true" : "false");
+          b.innerHTML = "<strong>" + lvl + "</strong><span>" + SEVERITY_LABELS[lvl] + "</span>";
+          b.addEventListener("click", () => {
+            atk.intensity = lvl;
+            renderModalBody();
+          });
+          sevWrap.appendChild(b);
+        });
+
+        // Time slots
+        const slotsWrap = document.getElementById("modal-slots-grid");
+        slotsWrap.innerHTML = "";
+        TIME_SLOTS.forEach(sl => {
+          const pressed = atk.slots.includes(sl.id);
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "select-chip";
+          b.setAttribute("aria-pressed", pressed ? "true" : "false");
+          b.innerHTML = svgSlotIcon(sl.id) + "<span>" + sl.label + "</span>";
+          b.addEventListener("click", () => {
+            if (atk.slots.includes(sl.id)) {
+              if (atk.slots.length > 1) {
+                atk.slots = atk.slots.filter(s => s !== sl.id);
+              } else {
+                showToast("Seleziona almeno una fascia della giornata.");
+                return;
+              }
+            } else {
+              atk.slots.push(sl.id);
+            }
+            renderModalBody();
+          });
+          slotsWrap.appendChild(b);
+        });
+
+        // Laterality
+        const latWrap = document.getElementById("modal-lat-grid");
+        latWrap.innerHTML = "";
+        LATERALITIES.forEach(lat => {
+          const pressed = atk.laterality === lat.id;
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "select-chip";
+          b.setAttribute("aria-pressed", pressed ? "true" : "false");
+          b.innerHTML = svgLateralityIcon(lat.id, "svg-icon-sm") + "<span>" + lat.label + "</span>";
+          b.addEventListener("click", () => {
+            atk.laterality = lat.id;
+            renderModalBody();
+          });
+          latWrap.appendChild(b);
+        });
+
+        // Medications (presets + any ad-hoc on this attack)
+        const medsWrap = document.getElementById("modal-meds-grid");
+        medsWrap.innerHTML = "";
+
+        const activePresets = state.presets.filter(p => p.attivo);
+        const combinedPool = activePresets.map(p => ({ name: p.nome, dose: p.dosaggio }));
+        (atk.meds || []).forEach(m => {
+          if (!combinedPool.some(p => p.name === m.name && p.dose === m.dose)) {
+            combinedPool.push({ name: m.name, dose: m.dose });
+          }
+        });
+
+        combinedPool.forEach(item => {
+          const existingMed = (atk.meds || []).find(m => m.name === item.name && m.dose === item.dose);
+          const pressed = Boolean(existingMed);
+          const chip = document.createElement("div");
+          chip.className = "select-chip med-chip";
+          chip.setAttribute("role", "button");
+          chip.setAttribute("tabindex", "0");
+          chip.setAttribute("aria-pressed", pressed ? "true" : "false");
+
+          let inner = svgPillIcon() + "<span>" + escapeHtml(item.name) + " " + escapeHtml(item.dose) + "</span>";
+          if (pressed) {
+            inner += '<span class="med-qty-controls">' +
+              '<button type="button" class="qty-mini-btn" data-qty="-1" aria-label="Diminuisci dose">-</button>' +
+              '<span class="tabular">' + existingMed.qty + '</span>' +
+              '<button type="button" class="qty-mini-btn" data-qty="1" aria-label="Aumenta dose">+</button>' +
+              '</span>';
+          }
+          chip.innerHTML = inner;
+
+          const toggleMed = () => {
+            if (pressed) {
+              atk.meds = atk.meds.filter(m => !(m.name === item.name && m.dose === item.dose));
+            } else {
+              atk.meds.push({ name: item.name, dose: item.dose, qty: 1 });
+            }
+            renderModalBody();
+          };
+
+          chip.addEventListener("click", (ev) => {
+            const qBtn = ev.target.closest("[data-qty]");
+            if (qBtn && existingMed) {
+              ev.stopPropagation();
+              const delta = Number(qBtn.dataset.qty);
+              existingMed.qty += delta;
+              if (existingMed.qty <= 0) {
+                atk.meds = atk.meds.filter(m => !(m.name === item.name && m.dose === item.dose));
+              }
+              renderModalBody();
+              return;
+            }
+            toggleMed();
+          });
+
+          chip.addEventListener("keydown", (ev) => {
+            if (ev.key === "Enter" || ev.key === " ") {
+              ev.preventDefault();
+              toggleMed();
+            }
+          });
+
+          medsWrap.appendChild(chip);
+        });
+
+        // Notes
+        const notesInput = document.getElementById("modal-notes-input");
+        notesInput.value = atk.notes || "";
+      }
+
+      function saveModalChanges() {
+        const isOn = document.getElementById("modal-migraine-switch").getAttribute("aria-checked") === "true";
+        const nowIso = new Date().toISOString();
+
+        // Mark existing episodes for modalDate that are removed as deleted (for Google Sheets sync tombstones)
+        const existingForDate = state.episodes.filter(e => e.date === modalDate && !e.deleted);
+
+        if (!isOn) {
+          existingForDate.forEach(e => {
+            e.deleted = true;
+            e.updatedAt = nowIso;
+          });
+          state.isDemo = false;
+          saveState();
+          closeDayModal();
+          renderAll();
+          showToast("Giornata aggiornata senza episodi.");
+          return;
+        }
+
+        // Persist current textarea notes into active draft
+        const currentNotes = document.getElementById("modal-notes-input").value.trim();
+        if (modalDraftAttacks[modalActiveAttackIdx]) {
+          modalDraftAttacks[modalActiveAttackIdx].notes = currentNotes;
+        }
+
+        const draftIds = new Set(modalDraftAttacks.map(d => d.id));
+        existingForDate.forEach(e => {
+          if (!draftIds.has(e.id)) {
+            e.deleted = true;
+            e.updatedAt = nowIso;
+          }
+        });
+
+        modalDraftAttacks.forEach(draft => {
+          draft.updatedAt = nowIso;
+          draft.deleted = false;
+          const idx = state.episodes.findIndex(e => e.id === draft.id);
+          if (idx >= 0) {
+            state.episodes[idx] = draft;
+          } else {
+            state.episodes.push(draft);
+          }
+        });
+
+        state.isDemo = false;
+        saveState();
+        closeDayModal();
+        renderAll();
+        showToast("Scheda del giorno salvata.");
+      }
+
+      function deleteEpisodeById(epId) {
+        const target = state.episodes.find(e => e.id === epId);
+        if (!target) return;
+        target.deleted = true;
+        target.updatedAt = new Date().toISOString();
+        state.isDemo = false;
+        saveState();
+        renderAll();
+        showToast("Attacco rimosso.");
+      }
+
+      /* -------------------------------------------------------------------
+         RENDER: STATISTICS & WIDGET PREVIEWS
+      ------------------------------------------------------------------- */
+      function renderStatsAndWidgets() {
+        const m = computeMonthMetrics(viewYear, viewMonth);
+        const since = computeDaysSinceLastEpisode();
+        document.getElementById("stats-month-label").textContent = MONTHS_IT[viewMonth] + " " + viewYear;
+
+        // Widget 2x2 Preview
+        const w2 = document.getElementById("preview-widget-2x2");
+        w2.innerHTML =
+          '<div class="widget-top-row"><span>Migraine Calendar</span>' +
+          '<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></div>' +
+          '<div><div class="widget-hero-num">' + (since === null ? "--" : since + " gg") + '</div>' +
+          '<div class="widget-sub">dall\'ultimo episodio</div></div>' +
+          '<div class="widget-top-row" style="border-top:1px solid var(--rule-hairline);padding-top:8px;">' +
+          '<span class="tabular">' + m.daysCount + ' gg/mese</span>' +
+          '<span class="tabular">Int. ' + (m.attacksCount ? m.avgIntensity.toFixed(1) : "0.0") + '</span></div>';
+
+        // Widget 4x2 Preview
+        const w4 = document.getElementById("preview-widget-4x2");
+        w4.innerHTML =
+          '<div style="display:flex;flex-direction:column;justify-content:space-between;">' +
+          '<div class="widget-top-row"><span>' + MONTHS_IT[viewMonth].slice(0, 3).toUpperCase() + ' ' + viewYear + '</span></div>' +
+          '<div><div class="widget-hero-num">' + (since === null ? "--" : since) + '</div>' +
+          '<div class="widget-sub">giorni dall\'ultimo episodio</div></div>' +
+          '<div class="widget-sub" style="font-weight:700;color:var(--ink-primary);">Migraine Calendar</div>' +
+          '</div>' +
+          '<div class="widget-4x2-stats">' +
+          '<div class="widget-mini-stat"><small>Giorni mese</small><strong>' + m.daysCount + '</strong></div>' +
+          '<div class="widget-mini-stat"><small>Attacchi</small><strong>' + m.attacksCount + '</strong></div>' +
+          '<div class="widget-mini-stat"><small>Int. media</small><strong>' + (m.attacksCount ? m.avgIntensity.toFixed(1) : "0.0") + '</strong></div>' +
+          '<div class="widget-mini-stat"><small>Farmaci</small><strong>' + m.medsCount + '</strong></div>' +
+          '</div>';
+
+        // Slots Frequency Bars
+        const slotsWrap = document.getElementById("stats-slots-bars");
+        slotsWrap.innerHTML = "";
+        const slotCounts = {};
+        TIME_SLOTS.forEach(s => { slotCounts[s.id] = 0; });
+        m.episodes.forEach(ep => {
+          (ep.slots || []).forEach(sl => {
+            if (slotCounts.hasOwnProperty(sl)) slotCounts[sl]++;
+          });
+        });
+        const maxSlot = Math.max(1, ...Object.values(slotCounts));
+        TIME_SLOTS.forEach(s => {
+          const cnt = slotCounts[s.id];
+          const pct = (cnt / maxSlot) * 100;
+          const row = document.createElement("div");
+          row.className = "bar-row";
+          row.innerHTML =
+            '<span style="display:flex;align-items:center;gap:6px;">' + svgSlotIcon(s.id) + '<span>' + s.label + '</span></span>' +
+            '<div class="bar-track"><div class="bar-fill" style="width:' + pct.toFixed(1) + '%"></div></div>' +
+            '<span class="tabular" style="text-align:right;font-weight:700;">' + cnt + '</span>';
+          slotsWrap.appendChild(row);
+        });
+
+        // Laterality Bars
+        const latWrap = document.getElementById("stats-lat-bars");
+        latWrap.innerHTML = "";
+        const maxLat = Math.max(1, ...Object.values(m.latCounts));
+        LATERALITIES.forEach(lat => {
+          const cnt = m.latCounts[lat.id] || 0;
+          const pct = (cnt / maxLat) * 100;
+          const row = document.createElement("div");
+          row.className = "bar-row";
+          row.innerHTML =
+            '<span style="display:flex;align-items:center;gap:6px;">' + svgLateralityIcon(lat.id, "svg-icon-sm") + '<span>' + lat.label + '</span></span>' +
+            '<div class="bar-track"><div class="bar-fill clinical" style="width:' + pct.toFixed(1) + '%"></div></div>' +
+            '<span class="tabular" style="text-align:right;font-weight:700;">' + cnt + '</span>';
+          latWrap.appendChild(row);
+        });
+
+        // Medications table
+        const medsBody = document.getElementById("stats-meds-tbody");
+        medsBody.innerHTML = "";
+        const medAgg = {};
+        m.episodes.forEach(ep => {
+          (ep.meds || []).forEach(med => {
+            const key = med.name + " " + med.dose;
+            if (!medAgg[key]) medAgg[key] = { doses: 0, attacks: 0, sevSum: 0 };
+            medAgg[key].doses += Number(med.qty || 1);
+            medAgg[key].attacks += 1;
+            medAgg[key].sevSum += Number(ep.intensity || 1);
+          });
+        });
+        const medKeys = Object.keys(medAgg);
+        if (medKeys.length === 0) {
+          medsBody.innerHTML = '<tr><td colspan="4" style="color:var(--ink-secondary);">Nessun farmaco assunto in questo mese.</td></tr>';
+        } else {
+          medKeys.sort((a, b) => medAgg[b].doses - medAgg[a].doses).forEach(k => {
+            const d = medAgg[k];
+            const tr = document.createElement("tr");
+            tr.innerHTML = '<td><strong>' + escapeHtml(k) + '</strong></td><td>' + d.doses + '</td><td>' + d.attacks + '</td><td>' + (d.sevSum / d.attacks).toFixed(1) + ' / 5</td>';
+            medsBody.appendChild(tr);
+          });
+        }
+
+        // 6-Month Trend Custom SVG Chart
+        renderSixMonthTrendSVG();
+      }
+
+      function renderSixMonthTrendSVG() {
+        const wrap = document.getElementById("stats-trend-svg-wrap");
+        const pts = [];
+        for (let offset = 5; offset >= 0; offset--) {
+          let y = viewYear;
+          let m = viewMonth - offset;
+          while (m < 0) { m += 12; y--; }
+          const metrics = computeMonthMetrics(y, m);
+          pts.push({
+            label: MONTHS_IT[m].slice(0, 3),
+            days: metrics.daysCount,
+            attacks: metrics.attacksCount
+          });
+        }
+        const maxVal = Math.max(4, ...pts.map(p => p.attacks));
+        const w = 520;
+        const h = 175;
+        const barW = 44;
+        const gap = 32;
+        const baseY = 138;
+        const plotH = 96;
+        const topY = baseY - plotH;
+
+        let svg = '<svg viewBox="0 0 ' + w + ' ' + h + '" style="width:100%;height:auto;display:block;font-family:var(--font-sans);font-variant-numeric:tabular-nums;" role="img" aria-label="Andamento giorni e attacchi ultimi 6 mesi">';
+        [0, 0.5, 1].forEach(frac => {
+          const yLine = Math.round(baseY - frac * plotH);
+          const tickVal = Math.round(frac * maxVal);
+          svg += '<line x1="28" y1="' + yLine + '" x2="504" y2="' + yLine + '" stroke="var(--rule-hairline)" stroke-width="1" ' + (frac > 0 ? 'stroke-dasharray="3 3"' : '') + '></line>';
+          svg += '<text x="20" y="' + (yLine + 4) + '" text-anchor="end" font-size="10" fill="var(--ink-muted)">' + tickVal + '</text>';
+        });
+        pts.forEach((p, i) => {
+          const x = 44 + i * (barW + gap);
+          const barH = Math.round((p.attacks / maxVal) * plotH);
+          const y = baseY - barH;
+          const isCur = i === pts.length - 1;
+          svg += '<rect x="' + x + '" y="' + y + '" width="' + barW + '" height="' + barH + '" rx="3" fill="' + (isCur ? "var(--accent-primary)" : "var(--accent-clinical-fill)") + '" opacity="' + (isCur ? "1" : "0.78") + '"></rect>';
+          svg += '<text x="' + (x + barW / 2) + '" y="' + (y - 6) + '" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink-primary)">' + p.attacks + ' (' + p.days + 'g)</text>';
+          svg += '<text x="' + (x + barW / 2) + '" y="' + (baseY + 18) + '" text-anchor="middle" font-size="11" fill="var(--ink-secondary)">' + p.label + '</text>';
+        });
+        svg += '</svg>';
+        wrap.innerHTML = svg;
+      }
+
+      /* -------------------------------------------------------------------
+         RENDER: SETTINGS & PRESETS
+      ------------------------------------------------------------------- */
+      function renderSettings() {
+        const list = document.getElementById("preset-meds-list");
+        list.innerHTML = "";
+        state.presets.forEach(p => {
+          const row = document.createElement("div");
+          row.className = "med-config-row";
+          row.innerHTML =
+            '<div style="display:flex;align-items:center;gap:8px;">' +
+            svgPillIcon() +
+            '<span><strong>' + escapeHtml(p.nome) + '</strong> · ' + escapeHtml(p.dosaggio) + '</span>' +
+            '</div>' +
+            '<div style="display:flex;align-items:center;gap:6px;">' +
+            '<button class="btn btn-subtle btn-sm" type="button" data-toggle="' + p.id + '">' + (p.attivo ? "Attivo" : "Disattivo") + '</button>' +
+            '<button class="icon-btn danger" type="button" data-del="' + p.id + '" aria-label="Rimuovi farmaco"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>' +
+            '</div>';
+
+          row.querySelector("[data-toggle]").addEventListener("click", () => {
+            p.attivo = !p.attivo;
+            p.updatedAt = new Date().toISOString();
+            saveState();
+            renderSettings();
+          });
+          row.querySelector("[data-del]").addEventListener("click", () => {
+            state.presets = state.presets.filter(item => item.id !== p.id);
+            saveState();
+            renderSettings();
+          });
+          list.appendChild(row);
+        });
+
+        document.getElementById("gs-client-id").value = state.sync.clientId || "";
+        document.getElementById("gs-spreadsheet-id").value = state.sync.spreadsheetId || "";
+
+        const isFileOrigin = window.location.protocol === "file:";
+        document.getElementById("oauth-origin-warning").style.display = isFileOrigin ? "block" : "none";
+        updateSyncStatusUI();
+      }
+
+      function updateSyncStatusUI() {
+        const pillTop = document.getElementById("btn-topbar-sync");
+        const labelTop = document.getElementById("topbar-sync-label");
+        const pillSet = document.getElementById("settings-sync-pill");
+        const labelSet = document.getElementById("settings-sync-status-text");
+        const infoEl = document.getElementById("gs-last-sync-info");
+
+        const hasToken = Boolean(state.sync.accessToken && Date.now() < (state.sync.tokenExpiresAt || 0));
+        let uiState = "local";
+        let topText = "Offline locale";
+        let setText = "Non connesso";
+
+        if (state.sync.status === "syncing") {
+          uiState = "syncing";
+          topText = "Sincronizzazione...";
+          setText = "Sincronizzazione in corso";
+        } else if (state.sync.status === "error") {
+          uiState = "error";
+          topText = "Errore sync";
+          setText = "Errore sincronizzazione";
+        } else if (hasToken) {
+          uiState = "synced";
+          topText = "Sheets connesso";
+          setText = "Token OAuth2 attivo";
+        }
+
+        pillTop.setAttribute("data-state", uiState);
+        labelTop.textContent = topText;
+        if (pillSet) pillSet.setAttribute("data-state", uiState);
+        if (labelSet) labelSet.textContent = setText;
+
+        if (infoEl) {
+          infoEl.textContent = state.sync.lastSyncAt
+            ? "Ultima sincronizzazione riuscita: " + new Date(state.sync.lastSyncAt).toLocaleString("it-IT")
+            : "Ultima sincronizzazione: nessuna in questa sessione (salvataggio locale attivo).";
+        }
+      }
+
+      /* -------------------------------------------------------------------
+         GOOGLE SHEETS API v4 + OAUTH2 WEB FLOW (NO GOOGLE PLAY SERVICES)
+      ------------------------------------------------------------------- */
+      function parseHashToken() {
+        if (!window.location.hash || window.location.hash.length < 2) return;
+        const params = new URLSearchParams(window.location.hash.slice(1));
+        const accessToken = params.get("access_token");
+        const expiresIn = Number(params.get("expires_in") || 3600);
+        if (accessToken) {
+          state.sync.accessToken = accessToken;
+          state.sync.tokenExpiresAt = Date.now() + expiresIn * 1000 - 30000;
+          state.sync.status = "synced";
+          saveState();
+          history.replaceState(null, "", window.location.pathname + window.location.search);
+          showToast("Connessione Google OAuth2 completata.");
+        }
+      }
+
+      function startGoogleOAuth() {
+        const clientId = document.getElementById("gs-client-id").value.trim();
+        const sheetId = document.getElementById("gs-spreadsheet-id").value.trim();
+        state.sync.clientId = clientId;
+        state.sync.spreadsheetId = sheetId;
+        saveState();
+
+        if (window.location.protocol === "file:") {
+          showToast("Apri la pagina su http://localhost per avviare OAuth2.");
+          return;
+        }
+        if (!clientId) {
+          showToast("Inserisci prima il Google OAuth Client ID.");
+          return;
+        }
+
+        const redirectUri = window.location.origin + window.location.pathname;
+        const authUrl = "https://accounts.google.com/o/oauth2/v2/auth?" + new URLSearchParams({
+          client_id: clientId,
+          redirect_uri: redirectUri,
+          response_type: "token",
+          scope: "https://www.googleapis.com/auth/spreadsheets",
+          include_granted_scopes: "true",
+          prompt: "consent"
+        }).toString();
+
+        window.location.assign(authUrl);
+      }
+
+      async function sheetsRequest(path, options) {
+        const token = state.sync.accessToken;
+        if (!token || Date.now() >= (state.sync.tokenExpiresAt || 0)) {
+          throw new Error("Token OAuth2 assente o scaduto. Riconnetti l'account Google.");
+        }
+        const res = await fetch("https://sheets.googleapis.com/v4/spreadsheets/" + state.sync.spreadsheetId + path, Object.assign({
+          headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+          }
+        }, options || {}));
+        if (!res.ok) {
+          const txt = await res.text();
+          throw new Error("Google Sheets API (" + res.status + "): " + txt.slice(0, 140));
+        }
+        return res.json();
+      }
+
+      async function initGoogleSheetTabs() {
+        if (!state.sync.spreadsheetId) {
+          showToast("Inserisci lo Spreadsheet ID.");
+          return;
+        }
+        state.sync.status = "syncing";
+        updateSyncStatusUI();
+        try {
+          const meta = await sheetsRequest("?fields=sheets.properties.title");
+          const titles = (meta.sheets || []).map(s => s.properties.title);
+          const requests = [];
+          if (!titles.includes("Episodi")) requests.push({ addSheet: { properties: { title: "Episodi" } } });
+          if (!titles.includes("Farmaci_Config")) requests.push({ addSheet: { properties: { title: "Farmaci_Config" } } });
+
+          if (requests.length > 0) {
+            await sheetsRequest(":batchUpdate", {
+              method: "POST",
+              body: JSON.stringify({ requests })
+            });
+          }
+
+          await sheetsRequest("/values/Episodi!A1:I1?valueInputOption=RAW", {
+            method: "PUT",
+            body: JSON.stringify({
+              values: [["ID_Episodio", "Data", "Fasce_Giornata", "Lateralita", "Intensita", "Farmaci", "Note", "Updated_At", "Deleted"]]
+            })
+          });
+          await sheetsRequest("/values/Farmaci_Config!A1:F1?valueInputOption=RAW", {
+            method: "PUT",
+            body: JSON.stringify({
+              values: [["ID_Farmaco", "Nome", "Dosaggio", "Attivo", "Ordine", "Updated_At"]]
+            })
+          });
+
+          state.sync.status = "synced";
+          saveState();
+          updateSyncStatusUI();
+          showToast("Tab Episodi e Farmaci_Config pronti sul Google Sheet.");
+        } catch (err) {
+          state.sync.status = "error";
+          updateSyncStatusUI();
+          showToast(err.message);
+        }
+      }
+
+      async function syncWithGoogleSheets() {
+        if (!state.sync.spreadsheetId) {
+          switchView("settings");
+          showToast("Configura Client ID e Spreadsheet ID nelle Impostazioni.");
+          return;
+        }
+        if (!state.sync.accessToken || Date.now() >= (state.sync.tokenExpiresAt || 0)) {
+          switchView("settings");
+          showToast("Connetti Google OAuth2 prima di sincronizzare.");
+          return;
+        }
+
+        state.sync.status = "syncing";
+        updateSyncStatusUI();
+
+        try {
+          // 1. Pull remote rows
+          const epRes = await sheetsRequest("/values/Episodi!A2:I");
+          const medRes = await sheetsRequest("/values/Farmaci_Config!A2:F");
+
+          const remoteEps = (epRes.values || []).filter(r => r[0]).map(r => ({
+            id: r[0],
+            date: r[1] || "",
+            slots: (r[2] || "").split(",").map(s => s.trim()).filter(Boolean),
+            laterality: r[3] || "ignora",
+            intensity: Number(r[4] || 1),
+            meds: parseMedsCell(r[5] || ""),
+            notes: r[6] || "",
+            updatedAt: r[7] || "1970-01-01T00:00:00Z",
+            deleted: String(r[8]).toUpperCase() === "TRUE"
+          }));
+
+          const mergedEpsMap = new Map();
+          state.episodes.forEach(e => mergedEpsMap.set(e.id, e));
+          remoteEps.forEach(re => {
+            const loc = mergedEpsMap.get(re.id);
+            if (!loc || re.updatedAt > (loc.updatedAt || "")) {
+              mergedEpsMap.set(re.id, re);
+            }
+          });
+          state.episodes = Array.from(mergedEpsMap.values()).sort((a, b) => a.date.localeCompare(b.date));
+
+          const remoteMeds = (medRes.values || []).filter(r => r[0]).map(r => ({
+            id: r[0],
+            nome: r[1] || "",
+            dosaggio: r[2] || "",
+            attivo: String(r[3]).toUpperCase() !== "FALSE",
+            ordine: Number(r[4] || 1),
+            updatedAt: r[5] || "1970-01-01T00:00:00Z"
+          }));
+
+          const mergedMedsMap = new Map();
+          state.presets.forEach(p => mergedMedsMap.set(p.id, p));
+          remoteMeds.forEach(rm => {
+            const loc = mergedMedsMap.get(rm.id);
+            if (!loc || rm.updatedAt > (loc.updatedAt || "")) {
+              mergedMedsMap.set(rm.id, rm);
+            }
+          });
+          state.presets = Array.from(mergedMedsMap.values()).sort((a, b) => a.ordine - b.ordine);
+
+          // 2. Push merged state back
+          const epRows = state.episodes.map(e => [
+            e.id,
+            e.date,
+            (e.slots || []).join(", "),
+            e.laterality || "ignora",
+            String(e.intensity || 1),
+            formatMedsCell(e.meds || []),
+            e.notes || "",
+            e.updatedAt || new Date().toISOString(),
+            e.deleted ? "TRUE" : "FALSE"
+          ]);
+
+          await sheetsRequest("/values/Episodi!A2:I:clear", { method: "POST" });
+          if (epRows.length > 0) {
+            await sheetsRequest("/values/Episodi!A2:I" + (epRows.length + 1) + "?valueInputOption=RAW", {
+              method: "PUT",
+              body: JSON.stringify({ values: epRows })
+            });
+          }
+
+          const medRows = state.presets.map((p, idx) => [
+            p.id,
+            p.nome,
+            p.dosaggio,
+            p.attivo ? "TRUE" : "FALSE",
+            String(p.ordine || idx + 1),
+            p.updatedAt || new Date().toISOString()
+          ]);
+
+          await sheetsRequest("/values/Farmaci_Config!A2:F:clear", { method: "POST" });
+          if (medRows.length > 0) {
+            await sheetsRequest("/values/Farmaci_Config!A2:F" + (medRows.length + 1) + "?valueInputOption=RAW", {
+              method: "PUT",
+              body: JSON.stringify({ values: medRows })
+            });
+          }
+
+          state.sync.status = "synced";
+          state.sync.lastSyncAt = new Date().toISOString();
+          state.isDemo = false;
+          saveState();
+          renderAll();
+          showToast("Sincronizzazione bidirezionale completata.");
+        } catch (err) {
+          state.sync.status = "error";
+          updateSyncStatusUI();
+          showToast(err.message);
+        }
+      }
+
+      function formatMedsCell(meds) {
+        return meds.map(m => m.name + " | " + m.dose + " | " + (m.qty || 1)).join("; ");
+      }
+
+      function parseMedsCell(cell) {
+        if (!cell.trim()) return [];
+        return cell.split(";").map(part => {
+          const bits = part.split("|").map(s => s.trim());
+          return { name: bits[0] || "", dose: bits[1] || "", qty: Number(bits[2] || 1) };
+        }).filter(m => m.name);
+      }
+
+      /* -------------------------------------------------------------------
+         UTILITY HELPERS
+      ------------------------------------------------------------------- */
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      /* -------------------------------------------------------------------
+         EVENT WIRING
+      ------------------------------------------------------------------- */
+      document.querySelectorAll(".nav-tab").forEach(tab => {
+        tab.addEventListener("click", () => switchView(tab.dataset.view));
+      });
+
+      document.getElementById("btn-theme-toggle").addEventListener("click", toggleTheme);
+      document.getElementById("settings-dark-switch").addEventListener("click", toggleTheme);
+
+      document.getElementById("btn-prev-month").addEventListener("click", () => {
+        viewMonth--;
+        if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+        renderAll();
+      });
+
+      document.getElementById("btn-next-month").addEventListener("click", () => {
+        viewMonth++;
+        if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+        renderAll();
+      });
+
+      document.getElementById("btn-today").addEventListener("click", () => {
+        const now = new Date();
+        viewYear = now.getFullYear();
+        viewMonth = now.getMonth();
+        selectedDate = getTodayIso();
+        renderAll();
+      });
+
+      document.getElementById("btn-quick-log").addEventListener("click", () => openDayModal(selectedDate));
+      document.getElementById("btn-shoulder-add").addEventListener("click", () => openDayModal(selectedDate));
+
+      document.getElementById("btn-topbar-sync").addEventListener("click", () => {
+        if (state.sync.accessToken && state.sync.spreadsheetId) {
+          syncWithGoogleSheets();
+        } else {
+          switchView("settings");
+        }
+      });
+
+      // Modal events
+      document.getElementById("btn-close-modal").addEventListener("click", closeDayModal);
+      document.getElementById("btn-modal-cancel").addEventListener("click", closeDayModal);
+      document.getElementById("btn-modal-save").addEventListener("click", saveModalChanges);
+
+      document.getElementById("modal-migraine-switch").addEventListener("click", function () {
+        const cur = this.getAttribute("aria-checked") === "true";
+        this.setAttribute("aria-checked", cur ? "false" : "true");
+        renderModalBody();
+      });
+
+      document.getElementById("btn-modal-new-attack").addEventListener("click", () => {
+        const notesInput = document.getElementById("modal-notes-input");
+        if (modalDraftAttacks[modalActiveAttackIdx]) {
+          modalDraftAttacks[modalActiveAttackIdx].notes = notesInput.value.trim();
+        }
+        modalDraftAttacks.push(createBlankAttack(modalDate));
+        modalActiveAttackIdx = modalDraftAttacks.length - 1;
+        renderModalBody();
+      });
+
+      document.getElementById("btn-modal-delete-attack").addEventListener("click", () => {
+        if (modalDraftAttacks.length <= 1) {
+          document.getElementById("modal-migraine-switch").setAttribute("aria-checked", "false");
+          renderModalBody();
+        } else {
+          modalDraftAttacks.splice(modalActiveAttackIdx, 1);
+          modalActiveAttackIdx = Math.max(0, modalActiveAttackIdx - 1);
+          renderModalBody();
+        }
+      });
+
+      document.getElementById("modal-notes-input").addEventListener("input", function () {
+        if (modalDraftAttacks[modalActiveAttackIdx]) {
+          modalDraftAttacks[modalActiveAttackIdx].notes = this.value;
+        }
+      });
+
+      document.getElementById("btn-modal-add-adhoc").addEventListener("click", () => {
+        const nameEl = document.getElementById("modal-adhoc-med-name");
+        const doseEl = document.getElementById("modal-adhoc-med-dose");
+        const name = nameEl.value.trim();
+        const dose = doseEl.value.trim() || "1 dose";
+        if (!name) {
+          showToast("Inserisci il nome del farmaco.");
+          return;
+        }
+        const atk = modalDraftAttacks[modalActiveAttackIdx];
+        const existing = atk.meds.find(m => m.name.toLowerCase() === name.toLowerCase() && m.dose.toLowerCase() === dose.toLowerCase());
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          atk.meds.push({ name, dose, qty: 1 });
+        }
+        if (document.getElementById("chk-save-adhoc-preset").checked) {
+          const alreadyPreset = state.presets.some(p => p.nome.toLowerCase() === name.toLowerCase() && p.dosaggio.toLowerCase() === dose.toLowerCase());
+          if (!alreadyPreset) {
+            state.presets.push({
+              id: "med-" + Math.random().toString(36).slice(2, 8),
+              nome: name,
+              dosaggio: dose,
+              attivo: true,
+              ordine: state.presets.length + 1,
+              updatedAt: new Date().toISOString()
+            });
+            saveState();
+          }
+        }
+        nameEl.value = "";
+        doseEl.value = "";
+        renderModalBody();
+      });
+
+      // Settings events
+      document.getElementById("btn-add-preset").addEventListener("click", () => {
+        const nome = document.getElementById("new-preset-name").value.trim();
+        const dosaggio = document.getElementById("new-preset-dose").value.trim();
+        if (!nome || !dosaggio) {
+          showToast("Inserisci nome e dosaggio del farmaco.");
+          return;
+        }
+        state.presets.push({
+          id: "med-" + Math.random().toString(36).slice(2, 8),
+          nome,
+          dosaggio,
+          attivo: true,
+          ordine: state.presets.length + 1,
+          updatedAt: new Date().toISOString()
+        });
+        document.getElementById("new-preset-name").value = "";
+        document.getElementById("new-preset-dose").value = "";
+        saveState();
+        renderSettings();
+        showToast("Farmaco predefinito aggiunto.");
+      });
+
+      document.getElementById("btn-save-gs-config").addEventListener("click", () => {
+        state.sync.clientId = document.getElementById("gs-client-id").value.trim();
+        state.sync.spreadsheetId = document.getElementById("gs-spreadsheet-id").value.trim();
+        saveState();
+        showToast("Configurazione Google Sheets salvata in locale.");
+      });
+
+      document.getElementById("btn-gs-connect").addEventListener("click", startGoogleOAuth);
+      document.getElementById("btn-gs-init-tabs").addEventListener("click", initGoogleSheetTabs);
+      document.getElementById("btn-gs-sync-now").addEventListener("click", syncWithGoogleSheets);
+      document.getElementById("btn-gs-disconnect").addEventListener("click", () => {
+        state.sync.accessToken = "";
+        state.sync.tokenExpiresAt = 0;
+        state.sync.status = "local";
+        saveState();
+        updateSyncStatusUI();
+        showToast("Token Google OAuth2 rimosso.");
+      });
+
+      document.getElementById("btn-copy-sheet-schema").addEventListener("click", () => {
+        const schemaText =
+          "Tab Episodi:\nID_Episodio\tData\tFasce_Giornata\tLateralita\tIntensita\tFarmaci\tNote\tUpdated_At\tDeleted\n\n" +
+          "Tab Farmaci_Config:\nID_Farmaco\tNome\tDosaggio\tAttivo\tOrdine\tUpdated_At";
+        navigator.clipboard.writeText(schemaText).then(() => showToast("Intestazioni copiate negli appunti."));
+      });
+
+      document.getElementById("btn-copy-neuro-report").addEventListener("click", () => {
+        const m = computeMonthMetrics(viewYear, viewMonth);
+        const lines = [
+          "MIGRAINE CALENDAR - RIEPILOGO CLINICO (" + MONTHS_IT[viewMonth] + " " + viewYear + ")",
+          "Giorni con emicrania: " + m.daysCount + " su " + m.daysInM,
+          "Numero attacchi totali: " + m.attacksCount,
+          "Intensita media: " + (m.attacksCount ? m.avgIntensity.toFixed(1) : "0.0") + " / 5",
+          "Dosi farmaci assunte: " + m.medsCount,
+          "",
+          "Dettaglio episodi:"
+        ];
+        m.episodes.slice().sort((a, b) => a.date.localeCompare(b.date)).forEach(ep => {
+          const slots = (ep.slots || []).map(s => (TIME_SLOTS.find(x => x.id === s) || {}).label || s).join(", ");
+          const meds = (ep.meds || []).map(x => x.name + " " + x.dose + (x.qty > 1 ? " x" + x.qty : "")).join(", ") || "Nessuno";
+          lines.push("- " + ep.date + " | Int. " + ep.intensity + "/5 | Lat: " + ep.laterality + " | Fasce: " + slots + " | Farmaci: " + meds + (ep.notes ? " | Note: " + ep.notes : ""));
+        });
+        navigator.clipboard.writeText(lines.join("\n")).then(() => showToast("Riepilogo clinico copiato per il neurologo."));
+      });
+
+      document.getElementById("btn-export-json").addEventListener("click", () => {
+        const payload = {
+          exportedAt: new Date().toISOString(),
+          episodes: state.episodes,
+          presets: state.presets
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "migraine-calendar-backup-" + getTodayIso() + ".json";
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("Backup JSON esportato.");
+      });
+
+      document.getElementById("input-import-json").addEventListener("change", function (ev) {
+        const file = ev.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const data = JSON.parse(reader.result);
+            if (Array.isArray(data.episodes)) state.episodes = data.episodes;
+            if (Array.isArray(data.presets)) state.presets = data.presets;
+            state.isDemo = false;
+            saveState();
+            renderAll();
+            showToast("Backup JSON importato correttamente.");
+          } catch (err) {
+            showToast("File JSON non valido.");
+          }
+        };
+        reader.readAsText(file);
+        ev.target.value = "";
+      });
+
+      document.getElementById("btn-reset-demo").addEventListener("click", () => {
+        state.isDemo = true;
+        state.episodes = getDefaultEpisodes();
+        state.presets = getDefaultPresets();
+        saveState();
+        renderAll();
+        showToast("Dati di esempio ripristinati.");
+      });
+
+      document.getElementById("btn-clear-all").addEventListener("click", () => {
+        if (window.confirm("Vuoi davvero cancellare tutti gli episodi locali?")) {
+          state.isDemo = false;
+          state.episodes = [];
+          saveState();
+          renderAll();
+          showToast("Tutti gli episodi sono stati rimossi.");
+        }
+      });
+
+      /* -------------------------------------------------------------------
+         INITIALIZATION
+      ------------------------------------------------------------------- */
+      parseHashToken();
+      renderAll();
+    })();
+  </script>
+</body>
+</html>
